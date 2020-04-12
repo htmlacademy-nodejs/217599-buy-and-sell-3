@@ -1,0 +1,25 @@
+{
+  "name": "217599-buy-and-sell-3",
+  "version": "1.0.0",
+  "description": "Куплю. Продам",
+  "main": "./src/service/service.js",
+  "scripts": {
+    "test": "npm run eslint",
+    "eslint": "eslint --ext .js src/",
+    "start": "node ./src/service/service.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shirokuiu/217599-buy-and-sell-3.git"
+  },
+  "author": "Osipov Pavel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Shirokuiu/217599-buy-and-sell-3/issues"
+  },
+  "homepage": "https://github.com/Shirokuiu/217599-buy-and-sell-3#readme",
+  "devDependencies": {
+    "eslint": "6.8.0",
+    "eslint-config-htmlacademy": "0.5.2"
+  }
+}
