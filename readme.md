@@ -1,7 +1,7 @@
 # Учебный проект «Куплю. Продам» [![Build status][travis-image]][travis-url]
 
 * Студент: [Павел Осипов](https://up.htmlacademy.ru/nodejs/3/user/217599).
-* Наставник: `Неизвестно`.
+* Наставник: [Андрей Сахаров](https://htmlacademy.ru/profile/id106477).
 
 ---
 
