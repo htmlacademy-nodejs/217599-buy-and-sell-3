@@ -1,8 +1,8 @@
 'use strict';
 
-const { getRandomInt, shuffle } = require(`../utils`);
+const {getRandomInt, shuffle} = require(`../utils`);
+const {ExitCode} = require(`../constants`);
 const fs = require(`fs`);
-
 const DEFAULT_COUNT = 1;
 const FILE_NAME = `mocks.json`;
 const MAX_COUNT = 1000;
@@ -56,7 +56,7 @@ const CATEGORIES = [
 ];
 
 const getPictureFileName = (imageNumber) => {
-  return `item${imageNumber < 10 ? `0${imageNumber}` : imageNumber}.jpg`
+  return `item${imageNumber < 10 ? `0${imageNumber}` : imageNumber}.jpg`;
 };
 
 const generateOffers = (count) => (
@@ -72,17 +72,26 @@ const generateOffers = (count) => (
 
 module.exports = {
   name: `--generate`,
-  run(args) {
-    const [count] = args;
+  run(count) {
+    // const [count] = args;
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
-    const content = JSON.stringify(generateOffers(countOffer));
+
+    if (countOffer > MAX_COUNT) {
+      console.log(`Не больше 1000 объявлений`);
+
+      process.exit(ExitCode.error);
+    }
+
+    const content = JSON.stringify(generateOffers(countOffer), null, ` `);
 
     fs.writeFile(FILE_NAME, content, (err) => {
       if (err) {
-        return console.error(`Can't write data to file...`);
+        console.error(`Can't write data to file...`);
+
+        process.exit(ExitCode.error);
       }
 
       return console.info(`Operation success. File created.`);
-    })
+    });
   }
 };

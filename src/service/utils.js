@@ -7,12 +7,14 @@ const getRandomInt = (min, max) => {
 };
 
 const shuffle = (someArray) => {
-  for (let i = someArray.length - 1; i > 0; i--) {
+  const someArrayCopied = [...someArray];
+
+  for (let i = someArrayCopied.length - 1; i > 0; i--) {
     const randomPosition = Math.floor(Math.random() * i);
-    [someArray[i], someArray[randomPosition]] = [someArray[randomPosition], someArray[i]];
+    [someArrayCopied[i], someArrayCopied[randomPosition]] = [someArrayCopied[randomPosition], someArrayCopied[i]];
   }
 
-  return someArray;
+  return someArrayCopied;
 };
 
 module.exports = {
