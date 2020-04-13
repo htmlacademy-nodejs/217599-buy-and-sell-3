@@ -61,7 +61,8 @@ const getPictureFileName = (imageNumber) => {
 
 const generateOffers = (count) => (
   Array(count).fill({}).map(() => ({
-    category: [CATEGORIES[getRandomInt(0, CATEGORIES.length - 1)]],
+    category: [...new Set(Array(getRandomInt(1, CATEGORIES.length - 1))
+      .fill().map(() => CATEGORIES[getRandomInt(0, CATEGORIES.length - 1)]))],
     description: shuffle(DESCRIPTIONS).slice(1, 5).join(` `),
     picture: getPictureFileName(getRandomInt(PictureCount.min, PictureCount.max)),
     title: TITLES[getRandomInt(0, TITLES.length - 1)],
@@ -73,7 +74,6 @@ const generateOffers = (count) => (
 module.exports = {
   name: `--generate`,
   run(count) {
-    // const [count] = args;
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
 
     if (countOffer > MAX_COUNT) {
