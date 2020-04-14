@@ -65,7 +65,7 @@ const getPictureFileName = (imageNumber) => {
 
 const generateOffers = (count) => (
   Array(count).fill({}).map(() => ({
-    category: [...new Set(shuffle(CATEGORIES).slice(0, getRandomInt(1, MaxCount.category)))],
+    category: shuffle(CATEGORIES).slice(0, getRandomInt(1, MaxCount.category)),
     description: shuffle(DESCRIPTIONS).slice(1, 5).join(` `),
     picture: getPictureFileName(getRandomInt(PictureCount.min, PictureCount.max)),
     title: TITLES[getRandomInt(0, TITLES.length - 1)],
