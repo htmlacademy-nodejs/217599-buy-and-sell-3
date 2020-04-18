@@ -41,6 +41,8 @@ const readContent = async (filePath) => {
   }
 };
 
+const getContent = async (...cb) => Promise.all([...cb]);
+
 const generateOffers = (count, titles, descriptions, categories) => (
   Array(count).fill({}).map(() => ({
     category: shuffle(categories).slice(0, getRandomInt(1, MaxCount.category)),
@@ -63,11 +65,12 @@ module.exports = {
       process.exit(ExitCode.error);
     }
 
-    const titles = await readContent(FILE_TITLES_PATH);
-    const descriptions = await readContent(FILE_DESCRIPTIONS_PATH);
-    const categories = await readContent(FILE_CATEGORIES_PATH);
-    const content = JSON
-      .stringify(generateOffers(countOffer, titles, descriptions, categories), null, ` `);
+    const content  = await getContent(
+      readContent(FILE_TITLES_PATH),
+      readContent(FILE_DESCRIPTIONS_PATH),
+      readContent(FILE_CATEGORIES_PATH)
+    ).then((contents) => JSON
+      .stringify(generateOffers(countOffer, contents[0], contents[1], contents[2]), null, ` `));
 
     try {
       await fs.writeFile(FILE_NAME, content);
