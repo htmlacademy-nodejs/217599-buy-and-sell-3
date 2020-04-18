@@ -81,7 +81,7 @@ module.exports = {
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
 
     if (countOffer > MaxCount.advert) {
-      console.log(`Не больше ${MaxCount.advert} объявлений`);
+      console.log(chalk.red(`Не больше ${MaxCount.advert} объявлений`));
 
       process.exit(ExitCode.error);
     }
