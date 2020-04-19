@@ -36,9 +36,13 @@ const readContent = async (filePath) => {
   try {
     const content = await fs.readFile(filePath, `utf8`);
 
+    if (!content.length) {
+      throw new Error(`Файл пуст`);
+    }
+
     return content.trim().split(`\n`);
   } catch (err) {
-    return console.log(chalk.red(err));
+    return console.error(err);
   }
 };
 
@@ -83,7 +87,7 @@ module.exports = {
         process.exit(ExitCode.error);
       }
     } catch (err) {
-      console.log(chalk.red(`Check the correct file path`));
+      console.log(chalk.red(err));
     }
   }
 };
