@@ -36,15 +36,9 @@ const readContent = async (filePath) => {
   try {
     const content = await fs.readFile(filePath, `utf8`);
 
-    if (content.length) {
-      return content.trim().split(`\n`);
-    }
-
-    return console.error(chalk.red(`Файл с данными пуст`));
+    return content.trim().split(`\n`);
   } catch (err) {
-    console.log(chalk.red(err));
-
-    return [];
+    return console.log(chalk.red(err));
   }
 };
 
@@ -72,19 +66,24 @@ module.exports = {
       process.exit(ExitCode.error);
     }
 
-    const content = await runParallel(
-        readContent(FILE_TITLES_PATH),
-        readContent(FILE_DESCRIPTIONS_PATH),
-        readContent(FILE_CATEGORIES_PATH)
-    ).then(([titles, descriptions, categories]) => JSON
-      .stringify(generateOffers(countOffer, titles, descriptions, categories), null, ` `));
-
     try {
-      await fs.writeFile(FILE_NAME, content);
-      console.info(chalk.green(`Operation success. File created.`));
+      const content = await runParallel(
+          readContent(FILE_TITLES_PATH),
+          readContent(FILE_DESCRIPTIONS_PATH),
+          readContent(FILE_CATEGORIES_PATH)
+      ).then(([titles, descriptions, categories]) => JSON
+        .stringify(generateOffers(countOffer, titles, descriptions, categories), null, ` `)
+      );
+
+      try {
+        await fs.writeFile(FILE_NAME, content);
+        console.info(chalk.green(`Operation success. File created.`));
+      } catch (err) {
+        console.error(chalk.red(`Can't write data to file...`));
+        process.exit(ExitCode.error);
+      }
     } catch (err) {
-      console.error(chalk.red(`Can't write data to file...`));
-      process.exit(ExitCode.error);
+      console.log(chalk.red(`Check the correct file path`));
     }
   }
 };
