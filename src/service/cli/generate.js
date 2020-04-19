@@ -36,13 +36,13 @@ const readContent = async (filePath) => {
   try {
     const content = await fs.readFile(filePath, `utf8`);
 
-    if (!content.length) {
+    if (!content.trim().length) {
       throw new Error(`Файл пуст`);
     }
 
     return content.trim().split(`\n`);
   } catch (err) {
-    throw new Error(err);
+    throw err;
   }
 };
 
@@ -79,15 +79,12 @@ module.exports = {
         .stringify(generateOffers(countOffer, titles, descriptions, categories), null, ` `)
       );
 
-      try {
-        await fs.writeFile(FILE_NAME, content);
-        console.info(chalk.green(`Operation success. File created.`));
-      } catch (err) {
-        console.error(chalk.red(`Can't write data to file...`));
-        process.exit(ExitCode.error);
-      }
+      await fs.writeFile(FILE_NAME, content);
+      console.info(chalk.green(`Operation success. File created.`));
     } catch (err) {
+      console.error(chalk.red(`Mock file generation failed`));
       console.log(chalk.red(err));
+      process.exit(ExitCode.error);
     }
   }
 };
