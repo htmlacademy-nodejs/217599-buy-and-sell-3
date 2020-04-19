@@ -42,7 +42,7 @@ const readContent = async (filePath) => {
 
     return content.trim().split(`\n`);
   } catch (err) {
-    return console.error(err);
+    return console.error(chalk.red(err));
   }
 };
 
