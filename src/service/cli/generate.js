@@ -1,16 +1,17 @@
 'use strict';
 
-const {getRandomInt, shuffle} = require(`../utils`);
-const {ExitCode} = require(`../constants`);
 const fs = require(`fs`).promises;
 const chalk = require(`chalk`);
 
+const {getRandomInt, shuffle} = require(`../utils`);
+const {ExitCode} = require(`../constants`);
+
 const DEFAULT_COUNT = 1;
 const FILE_NAME = `mocks.json`;
-const MaxCount = {
-  advert: 1000,
-  category: 6
-};
+const MAX_COUNT = Object.freeze({
+  ADVERT: 1000,
+  CATEGORY: 6
+});
 const Cost = {
   min: 1000,
   max: 100000
@@ -33,7 +34,13 @@ const getPictureFileName = (imageNumber) => {
 
 const readContent = async (filePath) => {
   try {
-    return (await fs.readFile(filePath, `utf8`)).trim().split(`\n`);
+    const content = await fs.readFile(filePath, `utf8`);
+
+    if (content.length) {
+      return content.trim().split(`\n`);
+    }
+
+    return console.error(chalk.red(`Файл с данными пуст`));
   } catch (err) {
     console.log(chalk.red(err));
 
@@ -41,11 +48,11 @@ const readContent = async (filePath) => {
   }
 };
 
-const getContent = async (...cb) => Promise.all([...cb]);
+const runParallel = async (...cb) => Promise.all([...cb]);
 
 const generateOffers = (count, titles, descriptions, categories) => (
   Array(count).fill({}).map(() => ({
-    category: shuffle(categories).slice(0, getRandomInt(1, MaxCount.category)),
+    category: shuffle(categories).slice(0, getRandomInt(1, MAX_COUNT.CATEGORY)),
     description: shuffle(descriptions).slice(1, 5).join(` `),
     picture: getPictureFileName(getRandomInt(PictureCount.min, PictureCount.max)),
     title: titles[getRandomInt(0, titles.length - 1)],
@@ -59,18 +66,18 @@ module.exports = {
   async run(count) {
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
 
-    if (countOffer > MaxCount.advert) {
-      console.log(chalk.red(`Не больше ${MaxCount.advert} объявлений`));
+    if (countOffer > MAX_COUNT.ADVERT) {
+      console.log(chalk.red(`Не больше ${MAX_COUNT.ADVERT} объявлений`));
 
       process.exit(ExitCode.error);
     }
 
-    const content  = await getContent(
-      readContent(FILE_TITLES_PATH),
-      readContent(FILE_DESCRIPTIONS_PATH),
-      readContent(FILE_CATEGORIES_PATH)
-    ).then((contents) => JSON
-      .stringify(generateOffers(countOffer, contents[0], contents[1], contents[2]), null, ` `));
+    const content = await runParallel(
+        readContent(FILE_TITLES_PATH),
+        readContent(FILE_DESCRIPTIONS_PATH),
+        readContent(FILE_CATEGORIES_PATH)
+    ).then(([titles, descriptions, categories]) => JSON
+      .stringify(generateOffers(countOffer, titles, descriptions, categories), null, ` `));
 
     try {
       await fs.writeFile(FILE_NAME, content);
