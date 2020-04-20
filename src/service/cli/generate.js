@@ -36,15 +36,13 @@ const readContent = async (filePath) => {
   try {
     const content = await fs.readFile(filePath, `utf8`);
 
-    if (content.length) {
-      return content.trim().split(`\n`);
+    if (!content.trim().length) {
+      throw new Error(`Файл пуст`);
     }
 
-    return console.error(chalk.red(`Файл с данными пуст`));
+    return content.trim().split(`\n`);
   } catch (err) {
-    console.log(chalk.red(err));
-
-    return [];
+    throw err;
   }
 };
 
@@ -72,18 +70,20 @@ module.exports = {
       process.exit(ExitCode.error);
     }
 
-    const content = await runParallel(
-        readContent(FILE_TITLES_PATH),
-        readContent(FILE_DESCRIPTIONS_PATH),
-        readContent(FILE_CATEGORIES_PATH)
-    ).then(([titles, descriptions, categories]) => JSON
-      .stringify(generateOffers(countOffer, titles, descriptions, categories), null, ` `));
-
     try {
+      const content = await runParallel(
+          readContent(FILE_TITLES_PATH),
+          readContent(FILE_DESCRIPTIONS_PATH),
+          readContent(FILE_CATEGORIES_PATH)
+      ).then(([titles, descriptions, categories]) => JSON
+        .stringify(generateOffers(countOffer, titles, descriptions, categories), null, ` `)
+      );
+
       await fs.writeFile(FILE_NAME, content);
       console.info(chalk.green(`Operation success. File created.`));
     } catch (err) {
-      console.error(chalk.red(`Can't write data to file...`));
+      console.error(chalk.red(`Mock file generation failed`));
+      console.log(chalk.red(err));
       process.exit(ExitCode.error);
     }
   }
