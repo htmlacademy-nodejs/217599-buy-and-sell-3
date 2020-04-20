@@ -1,13 +1,20 @@
+'use strict';
+
 const http = require(`http`);
 const fs = require(`fs`).promises;
 const chalk = require(`chalk`);
 
-const {HttpCode} = require(`../constants`);
+const {HTTP_CODE} = require(`../constants`);
 
-const DEFAULT_PORT = 3000;
 const FILENAME = `mocks.json`;
+const DEFAULT_PORT = 3000;
+const CONTENT_TYPE = Object.freeze({
+  HTML: {
+    'Content-Type': `text/html; charset=UTF-8`
+  }
+});
 
-const sendResponse = (res, statusCode, message) => {
+const sendResponse = (res, statusCode, message, contentType = CONTENT_TYPE.HTML) => {
   const template = `<!Doctype html>
       <html lang="ru">
       <head>
@@ -17,9 +24,7 @@ const sendResponse = (res, statusCode, message) => {
     </html>`.trim();
 
   res.statusCode = statusCode;
-  res.writeHead(statusCode, {
-    'Content-Type': `text/html; charset=UTF-8`
-  });
+  res.writeHead(statusCode, contentType);
   res.end(template);
 };
 
@@ -29,17 +34,18 @@ const onClientConnect = async (req, res) => {
   switch (req.url) {
     case `/`:
       try {
-        const fileContent = await fs.readFile(FILENAME, `utf8`);
+        const fileContent = await fs.readFile(FILENAME + 111, `utf8`);
         const mocks = JSON.parse(fileContent);
         const message = mocks.map((post) => `<li>${post.title}</li>`).join(``);
-        sendResponse(res, HttpCode.OK, `<ul>${message}</ul>>`);
+        sendResponse(res, HTTP_CODE.OK, `<ul>${message}</ul>`);
       } catch (err) {
-        console.log(err, FILENAME);
-        sendResponse(res, HttpCode.NOT_FOUND, notFoundMessageText);
+        console.error(chalk.red(`Возникла ошибка при чтении файла, ${FILENAME}`));
+        console.error(err);
+        sendResponse(res, HTTP_CODE.NOT_FOUND, notFoundMessageText);
       }
       break;
     default:
-      sendResponse(res, HttpCode.NOT_FOUND, notFoundMessageText);
+      sendResponse(res, HTTP_CODE.NOT_FOUND, notFoundMessageText);
       break;
   }
 };
@@ -56,7 +62,7 @@ module.exports = {
           return console.error(chalk.red(`Ошибка при создании сервера ${err}`));
         }
 
-        return console.log(chalk.green(`Ожидаю соединений на ${port}`));
-    })
+        return console.log(chalk.green(`Ожидаю соединений на ${port}: http://localhost:${port}`));
+      });
   }
 };
