@@ -8,6 +8,10 @@ const {HTTP_CODE} = require(`../constants`);
 
 const FILENAME = `mocks.json`;
 const DEFAULT_PORT = 3000;
+const RESPONSE_MESSAGE = {
+  NOT_FOUND: `Not found`,
+  NO_CONTENT_IN_RESPONSE: `The request was processed successfully and there is no content in the response`
+};
 const CONTENT_TYPE = Object.freeze({
   HTML: {
     'Content-Type': `text/html; charset=UTF-8`
@@ -29,23 +33,24 @@ const sendResponse = (res, statusCode, message, contentType = CONTENT_TYPE.HTML)
 };
 
 const onClientConnect = async (req, res) => {
-  const notFoundMessageText = `Not found`;
-
   switch (req.url) {
     case `/`:
       try {
-        const fileContent = await fs.readFile(FILENAME + 111, `utf8`);
+        const fileContent = await fs.readFile(FILENAME, `utf8`);
         const mocks = JSON.parse(fileContent);
         const message = mocks.map((post) => `<li>${post.title}</li>`).join(``);
         sendResponse(res, HTTP_CODE.OK, `<ul>${message}</ul>`);
       } catch (err) {
         console.error(chalk.red(`Возникла ошибка при чтении файла, ${FILENAME}`));
         console.error(err);
-        sendResponse(res, HTTP_CODE.NOT_FOUND, notFoundMessageText);
+        sendResponse(res, HTTP_CODE.NOT_FOUND, RESPONSE_MESSAGE.NOT_FOUND);
       }
       break;
+    case `/favicon.ico`:
+      sendResponse(res, HTTP_CODE.NO_CONTENT_IN_RESPONSE, RESPONSE_MESSAGE.NO_CONTENT_IN_RESPONSE);
+      break;
     default:
-      sendResponse(res, HTTP_CODE.NOT_FOUND, notFoundMessageText);
+      sendResponse(res, HTTP_CODE.NOT_FOUND, RESPONSE_MESSAGE.NOT_FOUND);
       break;
   }
 };
