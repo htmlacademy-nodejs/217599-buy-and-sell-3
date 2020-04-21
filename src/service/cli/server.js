@@ -8,10 +8,7 @@ const {HTTP_CODE} = require(`../constants`);
 
 const FILENAME = `mocks.json`;
 const DEFAULT_PORT = 3000;
-const RESPONSE_MESSAGE = {
-  NOT_FOUND: `Not found`,
-  NO_CONTENT_IN_RESPONSE: `The request was processed successfully and there is no content in the response`
-};
+const NOT_FOUND_MESSAGE = `Not found`;
 const CONTENT_TYPE = Object.freeze({
   HTML: {
     'Content-Type': `text/html; charset=UTF-8`
@@ -43,14 +40,14 @@ const onClientConnect = async (req, res) => {
       } catch (err) {
         console.error(chalk.red(`Возникла ошибка при чтении файла, ${FILENAME}`));
         console.error(err);
-        sendResponse(res, HTTP_CODE.NOT_FOUND, RESPONSE_MESSAGE.NOT_FOUND);
+        sendResponse(res, HTTP_CODE.NOT_FOUND, NOT_FOUND_MESSAGE);
       }
       break;
     case `/favicon.ico`:
-      sendResponse(res, HTTP_CODE.NO_CONTENT_IN_RESPONSE, RESPONSE_MESSAGE.NO_CONTENT_IN_RESPONSE);
+      sendResponse(res, HTTP_CODE.NO_CONTENT);
       break;
     default:
-      sendResponse(res, HTTP_CODE.NOT_FOUND, RESPONSE_MESSAGE.NOT_FOUND);
+      sendResponse(res, HTTP_CODE.NOT_FOUND, NOT_FOUND_MESSAGE);
       break;
   }
 };
