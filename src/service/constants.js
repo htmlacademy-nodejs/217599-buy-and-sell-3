@@ -8,6 +8,7 @@ const ExitCode = {
 };
 const HTTP_CODE = {
   OK: 200,
+  NO_CONTENT_IN_RESPONSE: 204,
   NOT_FOUND: 404,
   INTERNAL_SERVER_ERROR: 500,
   FORBIDDEN: 403,
