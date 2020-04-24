@@ -21,10 +21,9 @@ app.use(`/my`, myRoutes);
 app.use((req, res) => {
   res.status(404).render(`errors/404`);
 });
-app.use((err, req, res, next) => {
+app.use((err, req, res, _next) => {
   res.status(500).render(`errors/500`);
   console.error(err);
-  next();
 });
 
 app.listen(DEFAULT_PORT, () => {
