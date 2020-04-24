@@ -2,6 +2,8 @@
 
 const USER_ARGV_INDEX = 2;
 const DEFAULT_COMMAND = `--help`;
+const NOT_FOUND_MESSAGE = `Not found`;
+const INTERNAL_SERVER_ERROR_MESSAGE = `INTERNAL_SERVER_ERROR`;
 const ExitCode = {
   success: 0,
   error: 1
@@ -19,5 +21,7 @@ module.exports = {
   USER_ARGV_INDEX,
   DEFAULT_COMMAND,
   ExitCode,
-  HTTP_CODE
+  HTTP_CODE,
+  NOT_FOUND_MESSAGE,
+  INTERNAL_SERVER_ERROR_MESSAGE
 };
