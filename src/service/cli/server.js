@@ -15,14 +15,13 @@ app.set(`json spaces`, 2);
 
 app.use(express.json());
 
-app.use(`/`, offersRoutes);
+app.use(`/offers`, offersRoutes);
 app.use((req, res) => {
   res.status(HTTP_CODE.NOT_FOUND).send(NOT_FOUND_MESSAGE);
 });
-app.use((err, req, res, next) => {
+app.use((err, req, res, _next) => {
   res.status(HTTP_CODE.INTERNAL_SERVER_ERROR).send(INTERNAL_SERVER_ERROR_MESSAGE);
   console.log(err);
-  next();
 });
 
 module.exports = {

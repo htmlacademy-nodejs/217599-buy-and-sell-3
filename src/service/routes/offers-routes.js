@@ -7,7 +7,7 @@ const offersRouter = new Router();
 const {HTTP_CODE} = require(`../constants`);
 const FILENAME = `mocks.json`;
 
-offersRouter.get(`/offers`, async (req, res) => {
+offersRouter.get(`/`, async (req, res) => {
   try {
     const fileContent = await fs.readFile(FILENAME, `utf8`);
     const mocks = JSON.parse(fileContent);
