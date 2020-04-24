@@ -13,7 +13,7 @@ indexRouter.get(`/login`, (req, res) => {
 indexRouter.get(`/category`, (req, res) => {
   res.render(`category`);
 });
-indexRouter.get(`/sign-up`, (req, res) => {
+indexRouter.get(`/register`, (req, res) => {
   res.render(`sign-up`);
 });
 indexRouter.get(`/ticket`, (req, res) => {

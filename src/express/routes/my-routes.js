@@ -4,9 +4,6 @@ const {Router} = require(`express`);
 
 const myRouter = new Router();
 
-myRouter.get(`/`, (req, res) => {
-  res.send(`/my`);
-});
 myRouter.get(`/tickets`, (req, res) => {
   res.render(`my/my-tickets`);
 });
