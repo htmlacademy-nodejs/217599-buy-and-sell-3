@@ -1,9 +1,9 @@
 'use strict';
 
-const {parseTXTFile, checkArrayToAnotherArray, checkDuplicateInArray, checkStrBySpace} = require(`../../../utils`);
+const {parseTXTFile, compareArrayToAnotherArray, checkDuplicateInArray, checkStrBySpace} = require(`../../../utils`);
 const {FILE_PATH, OfferType} = require(`../../../constants`);
 
-const schemaPut = {
+const offerSchemaPut = {
   type: {
     isEmpty: {
       errorMessage: `Поле не может быть пустым`,
@@ -46,7 +46,7 @@ const schemaPut = {
 
         const categories = await parseTXTFile(FILE_PATH.CATEGORIES);
         const isDuplicate = checkDuplicateInArray(postCategories);
-        const hasInvalidCategories = checkArrayToAnotherArray(postCategories, categories);
+        const hasInvalidCategories = compareArrayToAnotherArray(postCategories, categories);
 
         if (isDuplicate) {
           throw new Error(`В категории должны быть уникальные значения`);
@@ -106,4 +106,4 @@ const schemaPut = {
   }
 };
 
-module.exports = schemaPut;
+module.exports = offerSchemaPut;

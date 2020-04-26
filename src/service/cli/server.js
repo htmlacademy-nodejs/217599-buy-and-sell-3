@@ -11,6 +11,7 @@ const DEFAULT_PORT = 3000;
 const {NOT_FOUND_MESSAGE, INTERNAL_SERVER_ERROR_MESSAGE} = require(`../constants`);
 const offersRoutes = require(`../routes/offers-routes`);
 const categoriesRoutes = require(`../routes/categories-routes`);
+const searchRoutes = require(`../routes/search-routes`);
 
 app.set(`json spaces`, 2);
 
@@ -18,6 +19,7 @@ app.use(express.json());
 
 app.use(`/api/offers`, offersRoutes);
 app.use(`/api/categories`, categoriesRoutes);
+app.use(`/api/search`, searchRoutes);
 app.use((req, res) => {
   res.status(HTTP_CODE.NOT_FOUND).send(NOT_FOUND_MESSAGE);
 });

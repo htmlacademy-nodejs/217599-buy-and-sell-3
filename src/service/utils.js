@@ -55,7 +55,7 @@ const runParallel = async (...cb) => Promise.all([...cb]);
 
 const checkDuplicateInArray = (arr) => arr.some((item, idx) => arr.indexOf(item) !== idx);
 
-const checkArrayToAnotherArray = (arr, masterArr) =>
+const compareArrayToAnotherArray = (arr, masterArr) =>
   Boolean(arr.filter((item) => masterArr.indexOf(item) === -1).length);
 
 const checkStrBySpace = (str) => str.search(` `) !== -1;
@@ -67,6 +67,6 @@ module.exports = {
   parseTXTFile,
   runParallel,
   checkDuplicateInArray,
-  checkArrayToAnotherArray,
+  compareArrayToAnotherArray,
   checkStrBySpace
 };

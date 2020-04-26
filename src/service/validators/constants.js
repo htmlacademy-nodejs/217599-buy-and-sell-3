@@ -18,6 +18,14 @@ const VALID_REQUEST_TEMPLATE = {
       sum: 0,
       category: []
     }
+  },
+  COMMENT: {
+    POST: {
+      text: ``
+    }
+  },
+  SEARCH_QUERY: {
+    query: ``
   }
 };
 

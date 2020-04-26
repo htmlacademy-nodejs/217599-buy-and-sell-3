@@ -1,8 +1,7 @@
 'use strict';
 
 const validateBySchema = require(`./validate-by-schema`);
-const offerSchemaPost = require(`./schema/offer/offer-schema-post`);
-const offerSchemaPut = require(`./schema/offer/offer-schema-put`);
+const {offerSchemaPost, offerSchemaPut, commentSchemaPost} = require(`./schema/index`);
 const validate = require(`./validate`);
 const {VALID_REQUEST_TEMPLATE} = require(`./constants`);
 
@@ -11,5 +10,6 @@ module.exports = {
   validate,
   offerSchemaPost,
   offerSchemaPut,
+  commentSchemaPost,
   VALID_REQUEST_TEMPLATE
 };

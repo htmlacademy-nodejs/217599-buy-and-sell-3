@@ -1,9 +1,9 @@
 'use strict';
 
-const {parseTXTFile, checkArrayToAnotherArray, checkDuplicateInArray, checkStrBySpace} = require(`../../../utils`);
+const {parseTXTFile, compareArrayToAnotherArray, checkDuplicateInArray, checkStrBySpace} = require(`../../../utils`);
 const {FILE_PATH, OfferType} = require(`../../../constants`);
 
-const schemaPost = {
+const offerSchemaPost = {
   type: {
     exists: {
       errorMessage: `Вы не передали поле type`
@@ -51,7 +51,7 @@ const schemaPost = {
 
         const categories = await parseTXTFile(FILE_PATH.CATEGORIES);
         const isDuplicate = checkDuplicateInArray(postCategories);
-        const hasInvalidCategories = checkArrayToAnotherArray(postCategories, categories);
+        const hasInvalidCategories = compareArrayToAnotherArray(postCategories, categories);
 
         if (isDuplicate) {
           throw new Error(`В категории должны быть уникальные значения`);
@@ -118,4 +118,4 @@ const schemaPost = {
   }
 };
 
-module.exports = schemaPost;
+module.exports = offerSchemaPost;

@@ -24,7 +24,31 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3000/api/offers/lmld1N
+DELETE http://localhost:3000/api/offers/V4ObMH
+Content-Type: application/json
+
+###
+
+GET http://localhost:3000/api/offers/V4ObMH/comments
+Content-Type: application/json
+
+###
+
+DELETE http://localhost:3000/api/offers/V4ObMH/comments/D84Wbn
+Content-Type: application/json
+
+###
+
+POST http://localhost:3000/api/offers/V4ObMH/comments
+Content-Type: application/json
+
+{
+  "text": "Текст комментария с двадцатью символами"
+}
+
+###
+
+GET http://localhost:3000/api/search?query=журналов
 Content-Type: application/json
 
 ###
