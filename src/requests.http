@@ -1,0 +1,16 @@
+POST http://localhost:3000/api/offers
+Content-Type: application/json
+
+{
+  "description": "Текст объявления. Минимум 50 символов, максимум 1000",
+  "picture": "picture.jpg",
+  "title": "Заголовок объявления",
+  "type": "offer",
+  "sum": 100,
+  "category": [
+    "Книги",
+    "Животные"
+  ]
+}
+
+###

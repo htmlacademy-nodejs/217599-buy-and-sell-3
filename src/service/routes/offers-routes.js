@@ -1,21 +1,48 @@
 'use strict';
 
 const {Router} = require(`express`);
-const fs = require(`fs`).promises;
+const {nanoid} = require(`nanoid`);
+
+const {parseJSONFile} = require(`../utils`);
+const {HTTP_CODE, NOT_FOUND_MESSAGE, ID_SIZE} = require(`../constants`);
+const {validateBySchema, validate, offerSchemaPost, VALID_REQUEST_TEMPLATE} = require(`../validators/index`);
 
 const offersRouter = new Router();
-const {HTTP_CODE} = require(`../constants`);
 const FILENAME = `mocks.json`;
 
 offersRouter.get(`/`, async (req, res) => {
   try {
-    const fileContent = await fs.readFile(FILENAME, `utf8`);
-    const mocks = JSON.parse(fileContent);
+    const mocks = await parseJSONFile(FILENAME);
+
     res.json(mocks);
   } catch (err) {
     console.error(err);
     res.status(HTTP_CODE.OK).json([]);
   }
 });
+offersRouter.get(`/:offerId`, async (req, res) => {
+  const offerId = req.params.offerId;
+
+  try {
+    const mock = await parseJSONFile(FILENAME).then((offers) => offers.find(({id}) => offerId === id));
+
+    if (!mock) {
+      throw new Error(`Объявление отсутствует`);
+    }
+
+    res.json(mock);
+  } catch (err) {
+    console.error(err);
+    res.status(HTTP_CODE.NOT_FOUND).send(NOT_FOUND_MESSAGE);
+  }
+});
+offersRouter.post(`/`, validateBySchema(offerSchemaPost),
+    (req, res, next) => validate(req, res, next, VALID_REQUEST_TEMPLATE.OFFER.POST),
+    (req, res) => {
+      res.json({
+        ...req.body,
+        id: nanoid(ID_SIZE)
+      });
+    });
 
 module.exports = offersRouter;

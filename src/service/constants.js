@@ -8,6 +8,7 @@ const ExitCode = {
   success: 0,
   error: 1
 };
+const ID_SIZE = 6;
 const HTTP_CODE = {
   OK: 200,
   NO_CONTENT: 204,
@@ -15,6 +16,17 @@ const HTTP_CODE = {
   INTERNAL_SERVER_ERROR: 500,
   FORBIDDEN: 403,
   UNAUTHORIZED: 401,
+  INVALID_REQUEST: 400
+};
+const FILE_PATH = {
+  TITLES: `./data/titles.txt`,
+  DESCRIPTIONS: `./data/descriptions.txt`,
+  CATEGORIES: `./data/categories.txt`,
+  COMMENTS: `./data/comments.txt`
+};
+const OfferType = {
+  sale: `sale`,
+  offer: `offer`
 };
 
 module.exports = {
@@ -23,5 +35,8 @@ module.exports = {
   ExitCode,
   HTTP_CODE,
   NOT_FOUND_MESSAGE,
-  INTERNAL_SERVER_ERROR_MESSAGE
+  INTERNAL_SERVER_ERROR_MESSAGE,
+  FILE_PATH,
+  OfferType,
+  ID_SIZE
 };
