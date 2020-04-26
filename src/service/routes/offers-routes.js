@@ -5,7 +5,7 @@ const {nanoid} = require(`nanoid`);
 
 const {parseJSONFile} = require(`../utils`);
 const {HTTP_CODE, NOT_FOUND_MESSAGE, ID_SIZE} = require(`../constants`);
-const {validateBySchema, validate, offerSchemaPost, VALID_REQUEST_TEMPLATE} = require(`../validators/index`);
+const {validateBySchema, validate, offerSchemaPost, offerSchemaPut, VALID_REQUEST_TEMPLATE} = require(`../validators/index`);
 
 const offersRouter = new Router();
 const FILENAME = `mocks.json`;
@@ -44,5 +44,44 @@ offersRouter.post(`/`, validateBySchema(offerSchemaPost),
         id: nanoid(ID_SIZE)
       });
     });
+offersRouter.put(`/:offerId`,
+    validateBySchema(offerSchemaPut),
+    (req, res, next) => validate(req, res, next, VALID_REQUEST_TEMPLATE.OFFER.PUT),
+    async (req, res) => {
+      const offerId = req.params.offerId;
+
+      try {
+        const mock = await parseJSONFile(FILENAME).then((offers) => offers.find(({id}) => offerId === id));
+
+        if (!mock) {
+          throw new Error(`Объявление отсутствует`);
+        }
+
+        res.json({
+          ...mock,
+          ...req.body
+        });
+      } catch (err) {
+        console.log(err);
+        res.status(HTTP_CODE.NOT_FOUND).send(NOT_FOUND_MESSAGE);
+      }
+    });
+offersRouter.delete(`/:offerId`, async (req, res) => {
+  const offerId = req.params.offerId;
+
+  try {
+    const mocks = await parseJSONFile(FILENAME)
+      .then((mockItems) => mockItems.slice().filter(({id}) => offerId !== id));
+
+    if (!mocks) {
+      throw new Error(`Объявление не удалено, так как оно не найдено`);
+    }
+
+    res.json(mocks);
+  } catch (err) {
+    console.log(err);
+    res.status(HTTP_CODE.NOT_FOUND).send(NOT_FOUND_MESSAGE);
+  }
+});
 
 module.exports = offersRouter;

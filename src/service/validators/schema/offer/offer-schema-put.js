@@ -5,9 +5,6 @@ const {FILE_PATH, OfferType} = require(`../../../constants`);
 
 const schemaPut = {
   type: {
-    exists: {
-      errorMessage: `Вы не передали поле type`
-    },
     isEmpty: {
       errorMessage: `Поле не может быть пустым`,
       negated: true,
@@ -30,12 +27,10 @@ const schemaPut = {
 
         return true;
       }
-    }
+    },
+    optional: true
   },
   category: {
-    exists: {
-      errorMessage: `Вы не передали поле category`
-    },
     isArray: {
       errorMessage: `Категория должна быть массивом, от 1 до 6 эллементов`,
       options: {
@@ -63,12 +58,10 @@ const schemaPut = {
 
         return true; // eslint-disable-line consistent-return
       }
-    }
+    },
+    optional: true
   },
   picture: {
-    exists: {
-      errorMessage: `Вы не передали поле picture`
-    },
     isEmpty: {
       errorMessage: `Укажите картинку`,
       negated: true,
@@ -76,12 +69,10 @@ const schemaPut = {
         ignore_whitespace: true // eslint-disable-line camelcase
       }
     },
-    escape: true
+    escape: true,
+    optional: true
   },
   description: {
-    exists: {
-      errorMessage: `Вы не передали поле description`
-    },
     isLength: {
       errorMessage: `Текст объявления. Минимум 50 символов, максимум 1000`,
       options: {
@@ -89,12 +80,10 @@ const schemaPut = {
         max: 1000
       }
     },
-    escape: true
+    escape: true,
+    optional: true
   },
   title: {
-    exists: {
-      errorMessage: `Вы не передали поле title`
-    },
     isLength: {
       errorMessage: `Заголовок объявления. Минимум 10 символов, максимум 100`,
       options: {
@@ -102,19 +91,18 @@ const schemaPut = {
         max: 100
       }
     },
-    escape: true
+    escape: true,
+    optional: true
   },
   sum: {
-    exists: {
-      errorMessage: `Вы не передали поле sum`
-    },
     isInt: {
       options: {
         min: 100
       },
       errorMessage: `Сумма должна быть c минимальным числом 100`,
     },
-    toInt: true
+    toInt: true,
+    optional: true
   }
 };
 

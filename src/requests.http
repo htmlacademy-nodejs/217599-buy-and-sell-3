@@ -14,3 +14,17 @@ Content-Type: application/json
 }
 
 ###
+
+PUT http://localhost:3000/api/offers/V4ObMH
+Content-Type: application/json
+
+{
+  "title": "Заголовок отредактированного объявления"
+}
+
+###
+
+DELETE http://localhost:3000/api/offers/lmld1N
+Content-Type: application/json
+
+###

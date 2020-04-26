@@ -11,8 +11,21 @@ const validate = (req, res, next, validTmp = undefined) => {
   if (validTmp) {
     const postTmpArr = Object.keys(req.body);
     const validTmpArr = Object.keys(validTmp);
+
+    // [@Shirokuiu]: Пустой ли body от клиента
+    if (!postTmpArr.length) {
+      extractedErrors.push({
+        body: `Переданные параметры пусты`
+      });
+
+      return res.status(HTTP_CODE.INVALID_REQUEST).json({
+        errors: extractedErrors,
+      });
+    }
+
     const hasInvalidTmp = checkArrayToAnotherArray(postTmpArr, validTmpArr);
 
+    // [@Shirokuiu]: Соответствует ли body клиента валидному шаблону
     if (hasInvalidTmp) {
       extractedErrors.push({
         body: `Переданные параметры не соответствуют шаблону`

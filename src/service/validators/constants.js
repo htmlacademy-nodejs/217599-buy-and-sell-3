@@ -9,6 +9,14 @@ const VALID_REQUEST_TEMPLATE = {
       type: ``,
       sum: 0,
       category: []
+    },
+    PUT: {
+      description: ``,
+      picture: ``,
+      title: ``,
+      type: ``,
+      sum: 0,
+      category: []
     }
   }
 };
