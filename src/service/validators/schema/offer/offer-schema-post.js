@@ -15,14 +15,13 @@ const offerSchemaPost = {
         ignore_whitespace: true // eslint-disable-line camelcase
       }
     },
+    isIn: {
+      options: [Object.values(OfferType)],
+      errorMessage: `Передан не правильный тип объявления`
+    },
     custom: {
       options: (typeValue) => {
         const hasSpace = checkStrBySpace(typeValue);
-        const invalidType = !Object.keys(OfferType).includes(typeValue.trim());
-
-        if (invalidType) {
-          throw new Error(`Передан не правильный тип объявления`);
-        }
 
         if (hasSpace) {
           throw new Error(`Значение не должно содержать пробелов`);
