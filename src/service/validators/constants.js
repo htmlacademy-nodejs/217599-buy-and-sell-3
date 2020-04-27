@@ -24,7 +24,7 @@ const VALID_REQUEST_TEMPLATE = {
       text: ``
     }
   },
-  SEARCH_QUERY: {
+  SEARCH: {
     query: ``
   }
 };

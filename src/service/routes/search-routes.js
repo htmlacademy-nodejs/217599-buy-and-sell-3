@@ -19,7 +19,7 @@ searchRouter.get(`/`, async (req, res) => {
   const reqQueryTmp = Object.keys(reqQuery);
 
   try {
-    const validQueryTmp = Object.keys(VALID_REQUEST_TEMPLATE.SEARCH_QUERY);
+    const validQueryTmp = Object.keys(VALID_REQUEST_TEMPLATE.SEARCH);
     const isQueryInValid = compareArrayToAnotherArray(reqQueryTmp, validQueryTmp);
 
     if (isQueryInValid) {
