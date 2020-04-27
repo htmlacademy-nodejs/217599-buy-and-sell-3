@@ -9,9 +9,7 @@ const app = express();
 
 const DEFAULT_PORT = 3000;
 const {NOT_FOUND_MESSAGE, INTERNAL_SERVER_ERROR_MESSAGE} = require(`../constants`);
-const offersRoutes = require(`../routes/offers-routes`);
-const categoriesRoutes = require(`../routes/categories-routes`);
-const searchRoutes = require(`../routes/search-routes`);
+const {offersRoutes, searchRoutes, categoriesRoutes} = require(`../routes/index`);
 
 app.set(`json spaces`, 2);
 
