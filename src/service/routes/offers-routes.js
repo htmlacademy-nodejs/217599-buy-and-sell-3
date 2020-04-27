@@ -23,7 +23,7 @@ offersRouter.get(`/`, async (req, res) => {
     res.json(mocks);
   } catch (err) {
     console.error(err);
-    res.status(HTTP_CODE.OK).json([]);
+    res.status(HTTP_CODE.NOT_FOUND).json([]);
   }
 });
 offersRouter.get(`/:offerId`, async (req, res) => {
@@ -64,7 +64,7 @@ offersRouter.post(`/`,
     validateBySchema(offerSchemaPost),
     (req, res, next) => validate(req, res, next, VALID_REQUEST_TEMPLATE.OFFER.POST),
     (req, res) => {
-      res.json({
+      res.status(HTTP_CODE.CREATED).json({
         ...req.body,
         id: nanoid(ID_SIZE)
       });
@@ -73,7 +73,7 @@ offersRouter.post(`/:offerId/comments`,
     validateBySchema(commentSchemaPost),
     (req, res, next) => validate(req, res, next, VALID_REQUEST_TEMPLATE.COMMENT.POST),
     (req, res) => {
-      res.json({
+      res.status(HTTP_CODE.CREATED).json({
         ...req.body,
         id: nanoid(ID_SIZE)
       });
@@ -104,14 +104,14 @@ offersRouter.delete(`/:offerId`, async (req, res) => {
   const offerId = req.params.offerId;
 
   try {
-    const mock = await parseJSONFile(MOCKS_FILE_NAME)
-      .then((mockItems) => mockItems.find(({id}) => offerId === id));
+    const mocks = await parseJSONFile(MOCKS_FILE_NAME)
+      .then((mockItems) => mockItems.filter(({id}) => offerId !== id));
 
-    if (!mock) {
+    if (!mocks) {
       throw new Error(`Объявление не удалено, так как оно не найдено`);
     }
 
-    res.json(mock);
+    res.status(HTTP_CODE.NO_CONTENT).send();
   } catch (err) {
     console.log(err);
     res.status(HTTP_CODE.NOT_FOUND).send(NOT_FOUND_MESSAGE);
@@ -129,13 +129,13 @@ offersRouter.delete(`/:offerId/comments/:commentId`, async (req, res) => {
     }
 
     const deletedComment = offers.slice()
-      .find(({id}) => offerId === id).comments.find(({id}) => commentId === id);
+      .find(({id}) => offerId === id).comments.filter(({id}) => commentId !== id);
 
     if (!deletedComment) {
       throw new Error(`Не удалось удалить комментарий, так как такого комментария не было найдено`);
     }
 
-    res.json(deletedComment);
+    res.status(HTTP_CODE.NO_CONTENT).send();
   } catch (err) {
     console.log(err);
     res.status(HTTP_CODE.NOT_FOUND).send(NOT_FOUND_MESSAGE);
