@@ -1,8 +1,8 @@
 'use strict';
 
-const offersRoutes = require(`../routes/offers-routes`);
-const categoriesRoutes = require(`../routes/categories-routes`);
-const searchRoutes = require(`../routes/search-routes`);
+const offersRoutes = require(`./offers-routes`);
+const categoriesRoutes = require(`./categories-routes`);
+const searchRoutes = require(`./search-routes`);
 
 module.exports = {
   offersRoutes,
