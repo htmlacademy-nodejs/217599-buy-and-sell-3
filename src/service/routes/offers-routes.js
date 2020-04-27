@@ -23,7 +23,7 @@ offersRouter.get(`/`, async (req, res) => {
     res.json(mocks);
   } catch (err) {
     console.error(err);
-    res.status(HTTP_CODE.NOT_FOUND).json([]);
+    res.status(HTTP_CODE.OK).json([]);
   }
 });
 offersRouter.get(`/:offerId`, async (req, res) => {
