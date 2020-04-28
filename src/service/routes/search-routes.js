@@ -7,10 +7,9 @@ const {
   HTTP_CODE,
   INVALID_REQUEST_MESSAGE,
   NOT_FOUND_MESSAGE,
-  QUERY_STRING_EMPTY_MESSAGE,
-  MOCKS_FILE_NAME
+  QUERY_STRING_EMPTY_MESSAGE
 } = require(`../constants`);
-const {compareArrayToAnotherArray, parseJSONFile} = require(`../utils`);
+const {compareArrayToAnotherArray, mockData} = require(`../utils`);
 
 const searchRouter = new Router();
 
@@ -31,8 +30,10 @@ searchRouter.get(`/`, async (req, res) => {
       throw new Error(QUERY_STRING_EMPTY_MESSAGE);
     }
 
-    const foundOffers = await parseJSONFile(MOCKS_FILE_NAME)
-      .then((offers) => offers.filter(({title}) => title.includes(reqQuery.query)));
+    const foundOffers = mockData.offers
+      .filter(({title}) => title.toLowerCase().includes(reqQuery.query.toLowerCase()));
+
+    console.log(mockData.offers);
 
     res.json(foundOffers);
   } catch (err) {
