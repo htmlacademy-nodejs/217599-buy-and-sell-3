@@ -26,7 +26,9 @@ offersRouter.get(`/:offerId`, async (req, res) => {
     const offer = mockData.offers.find(({id}) => offerId === id);
 
     if (!offer) {
-      throw new Error(`Объявление отсутствует`);
+      res.status(HTTP_CODE.NOT_FOUND).send(NOT_FOUND_MESSAGE);
+
+      return;
     }
 
     res.json(offer);
@@ -42,7 +44,9 @@ offersRouter.get(`/:offerId/comments`, async (req, res) => {
     const offers = mockData.offers.find(({id}) => offerId === id);
 
     if (!offers) {
-      throw new Error(`Объявление c комментариями не найдено`);
+      res.status(HTTP_CODE.NOT_FOUND).send(NOT_FOUND_MESSAGE);
+
+      return;
     }
 
     const comments = offers.comments;
@@ -65,7 +69,7 @@ offersRouter.post(`/`,
 
       mockData.offers.push(newOffer);
 
-      res.status(HTTP_CODE.CREATED).json(newOffer.id);
+      res.status(HTTP_CODE.CREATED).json({id: newOffer.id});
     });
 offersRouter.post(`/:offerId/comments`,
     validateBySchema(commentSchemaPost),
@@ -77,7 +81,7 @@ offersRouter.post(`/:offerId/comments`,
         const offer = mockData.offers.find(({id}) => offerId === id);
 
         if (!offer) {
-          throw new Error(`Невозможно добавить комментарий, так как объявление не найдено`);
+          res.status(HTTP_CODE.NOT_FOUND).send(NOT_FOUND_MESSAGE);
         }
 
         const newComment = {
@@ -101,7 +105,9 @@ offersRouter.put(`/:offerId`,
         let offerIndex = mockData.offers.findIndex(({id}) => offerId === id);
 
         if (offerIndex === -1) {
-          throw new Error(`Объявление отсутствует`);
+          res.status(HTTP_CODE.NOT_FOUND).send(NOT_FOUND_MESSAGE);
+
+          return;
         }
 
         mockData.offers[offerIndex] = {
@@ -124,7 +130,9 @@ offersRouter.delete(`/:offerId`, async (req, res) => {
     const offer = mockData.offers.find(({id}) => offerId === id);
 
     if (!offer) {
-      throw new Error(`Объявление не удалено, так как оно не найдено`);
+      res.status(HTTP_CODE.NOT_FOUND).send(NOT_FOUND_MESSAGE);
+
+      return;
     }
 
     mockData.offers = mockData.offers.filter(({id}) => offerId !== id);
@@ -142,13 +150,15 @@ offersRouter.delete(`/:offerId/comments/:commentId`, async (req, res) => {
     const offer = mockData.offers.find(({id}) => offerId === id);
 
     if (!offer) {
-      throw new Error(`Не удалось удалить комментарий, так как объявление не найдено`);
+      res.status(HTTP_CODE.NOT_FOUND).send(NOT_FOUND_MESSAGE);
+
+      return;
     }
 
     const deletedComment = offer.comments.filter(({id}) => commentId === id);
 
-    if (!deletedComment) {
-      throw new Error(`Не удалось удалить комментарий, так как такого комментария не было найдено`);
+    if (!deletedComment.length) {
+      res.status(HTTP_CODE.NOT_FOUND).send(NOT_FOUND_MESSAGE);
     }
 
     offer.comments = offer.comments.filter(({id}) => commentId !== id);

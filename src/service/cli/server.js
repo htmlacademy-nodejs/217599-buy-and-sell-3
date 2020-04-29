@@ -4,7 +4,7 @@ const express = require(`express`);
 const chalk = require(`chalk`);
 
 const {HTTP_CODE, NOT_FOUND_MESSAGE, INTERNAL_SERVER_ERROR_MESSAGE, MOCKS_FILE_NAME} = require(`../constants`);
-let {parseJSONFile, mockData} = require(`../utils`);
+const {parseJSONFile, mockData} = require(`../utils`);
 const {offersRoutes, searchRoutes, categoriesRoutes} = require(`../routes/index`);
 
 const app = express();

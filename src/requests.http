@@ -39,7 +39,7 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3000/api/offers/QTw4rd/comments/HobK7r
+DELETE http://localhost:3000/api/offers/7d8tO4/comments/HobK7r
 Content-Type: application/json
 
 ###

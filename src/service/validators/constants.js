@@ -29,6 +29,11 @@ const VALID_REQUEST_TEMPLATE = {
   }
 };
 
+const ERROR_TEMPLATE = {
+  errors: []
+};
+
 module.exports = {
-  VALID_REQUEST_TEMPLATE
+  VALID_REQUEST_TEMPLATE,
+  ERROR_TEMPLATE
 };
