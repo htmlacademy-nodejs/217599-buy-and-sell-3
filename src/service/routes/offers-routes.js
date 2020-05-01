@@ -16,8 +16,12 @@ const {
 
 const offersRouter = new Router();
 
-offersRouter.get(`/`, (req, res) => {
-  res.json(mockData.offers);
+offersRouter.get(`/`, (req, res, next) => {
+  try {
+    res.json(mockData.offers);
+  } catch (err) {
+    next(err);
+  }
 });
 offersRouter.get(`/:offerId`, (req, res, next) => {
   try {
