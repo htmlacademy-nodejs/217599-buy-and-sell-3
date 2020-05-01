@@ -19,10 +19,9 @@ const offersRouter = new Router();
 offersRouter.get(`/`, (req, res) => {
   res.json(mockData.offers);
 });
-offersRouter.get(`/:offerId`, async (req, res) => {
-  const offerId = req.params.offerId;
-
+offersRouter.get(`/:offerId`, (req, res, next) => {
   try {
+    const offerId = req.params.offerId;
     const offer = mockData.offers.find(({id}) => offerId === id);
 
     if (!offer) {
@@ -32,14 +31,12 @@ offersRouter.get(`/:offerId`, async (req, res) => {
 
     res.json(offer);
   } catch (err) {
-    console.error(err);
-    res.status(HTTP_CODE.NOT_FOUND).send(NOT_FOUND_MESSAGE);
+    next(err);
   }
 });
-offersRouter.get(`/:offerId/comments`, async (req, res) => {
-  const offerId = req.params.offerId;
-
+offersRouter.get(`/:offerId/comments`, (req, res, next) => {
   try {
+    const offerId = req.params.offerId;
     const offers = mockData.offers.find(({id}) => offerId === id);
 
     if (!offers) {
@@ -52,8 +49,7 @@ offersRouter.get(`/:offerId/comments`, async (req, res) => {
 
     res.json(comments);
   } catch (err) {
-    console.log(err);
-    res.status(HTTP_CODE.NOT_FOUND).send(NOT_FOUND_MESSAGE);
+    next(err);
   }
 });
 offersRouter.post(`/`,
@@ -73,7 +69,7 @@ offersRouter.post(`/`,
 offersRouter.post(`/:offerId/comments`,
     validateBySchema(commentSchemaPost),
     (req, res, next) => validate(req, res, next, VALID_REQUEST_TEMPLATE.COMMENT.POST),
-    (req, res) => {
+    (req, res, next) => {
       const offerId = req.params.offerId;
 
       try {
@@ -81,6 +77,8 @@ offersRouter.post(`/:offerId/comments`,
 
         if (!offer) {
           res.status(HTTP_CODE.NOT_FOUND).send(NOT_FOUND_MESSAGE);
+
+          return;
         }
 
         const newComment = {
@@ -91,16 +89,15 @@ offersRouter.post(`/:offerId/comments`,
         offer.comments.push(newComment);
         res.status(HTTP_CODE.CREATED).json(newComment.id);
       } catch (err) {
-        res.status(HTTP_CODE.NOT_FOUND).send(NOT_FOUND_MESSAGE);
+        next(err);
       }
     });
 offersRouter.put(`/:offerId`,
     validateBySchema(offerSchemaPut),
     (req, res, next) => validate(req, res, next, VALID_REQUEST_TEMPLATE.OFFER.PUT),
-    async (req, res) => {
-      const offerId = req.params.offerId;
-
+    async (req, res, next) => {
       try {
+        const offerId = req.params.offerId;
         let offerIndex = mockData.offers.findIndex(({id}) => offerId === id);
 
         if (offerIndex === -1) {
@@ -118,14 +115,12 @@ offersRouter.put(`/:offerId`,
           ...req.body,
         });
       } catch (err) {
-        console.log(err);
-        res.status(HTTP_CODE.NOT_FOUND).send(NOT_FOUND_MESSAGE);
+        next(err);
       }
     });
-offersRouter.delete(`/:offerId`, async (req, res) => {
-  const offerId = req.params.offerId;
-
+offersRouter.delete(`/:offerId`, (req, res, next) => {
   try {
+    const offerId = req.params.offerId;
     const offer = mockData.offers.find(({id}) => offerId === id);
 
     if (!offer) {
@@ -137,15 +132,13 @@ offersRouter.delete(`/:offerId`, async (req, res) => {
     mockData.offers = mockData.offers.filter(({id}) => offerId !== id);
     res.status(HTTP_CODE.NO_CONTENT).send();
   } catch (err) {
-    console.log(err);
-    res.status(HTTP_CODE.NOT_FOUND).send(NOT_FOUND_MESSAGE);
+    next(err);
   }
 });
-offersRouter.delete(`/:offerId/comments/:commentId`, async (req, res) => {
-  const offerId = req.params.offerId;
-  const commentId = req.params.commentId;
-
+offersRouter.delete(`/:offerId/comments/:commentId`, async (req, res, next) => {
   try {
+    const offerId = req.params.offerId;
+    const commentId = req.params.commentId;
     const offer = mockData.offers.find(({id}) => offerId === id);
 
     if (!offer) {
@@ -165,8 +158,7 @@ offersRouter.delete(`/:offerId/comments/:commentId`, async (req, res) => {
     offer.comments = offer.comments.filter(({id}) => commentId !== id);
     res.status(HTTP_CODE.NO_CONTENT).send();
   } catch (err) {
-    console.log(err);
-    res.status(HTTP_CODE.NOT_FOUND).send(NOT_FOUND_MESSAGE);
+    next(err);
   }
 });
 

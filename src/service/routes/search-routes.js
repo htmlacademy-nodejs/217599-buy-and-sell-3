@@ -3,21 +3,17 @@
 const {Router} = require(`express`);
 
 const {VALID_REQUEST_TEMPLATE, ERROR_TEMPLATE} = require(`../validators/constants`);
-const {
-  HTTP_CODE,
-  NOT_FOUND_MESSAGE
-} = require(`../constants`);
+const {HTTP_CODE} = require(`../constants`);
 const {compareArrayToAnotherArray, mockData} = require(`../utils`);
 
 const searchRouter = new Router();
 
 const validQueryTmp = Object.keys(VALID_REQUEST_TEMPLATE.SEARCH);
 
-searchRouter.get(`/`, async (req, res) => {
-  const reqQuery = req.query;
-  const reqQueryTmp = Object.keys(reqQuery);
-
+searchRouter.get(`/`, (req, res, next) => {
   try {
+    const reqQuery = req.query;
+    const reqQueryTmp = Object.keys(reqQuery);
     const isQueryInvalid = compareArrayToAnotherArray(reqQueryTmp, validQueryTmp);
 
     if (isQueryInvalid) {
@@ -25,6 +21,8 @@ searchRouter.get(`/`, async (req, res) => {
         search: `Передан не валидный параметр поиска`
       });
       res.status(HTTP_CODE.INVALID_REQUEST).send(ERROR_TEMPLATE);
+
+      return;
     }
 
     // [@Shirokuiu]: Если параметр пустой
@@ -39,7 +37,7 @@ searchRouter.get(`/`, async (req, res) => {
 
     res.json(foundOffers);
   } catch (err) {
-    res.status(HTTP_CODE.NOT_FOUND).send(NOT_FOUND_MESSAGE);
+    next(err);
   }
 });
 
