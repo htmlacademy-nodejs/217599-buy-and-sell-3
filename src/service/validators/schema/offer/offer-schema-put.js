@@ -1,7 +1,7 @@
 'use strict';
 
 const {parseTXTFile, compareArrayToAnotherArray, checkDuplicateInArray, checkStrBySpace} = require(`../../../utils`);
-const {FILE_PATH, OfferType} = require(`../../../constants`);
+const {FILE_PATH, OfferType, COUNT} = require(`../../../constants`);
 
 const offerSchemaPut = {
   type: {
@@ -31,10 +31,10 @@ const offerSchemaPut = {
   },
   category: {
     isArray: {
-      errorMessage: `Категория должна быть массивом, от 1 до 6 эллементов`,
+      errorMessage: `Категория должна быть массивом, от ${COUNT.CATEGORY.MIN} до ${COUNT.CATEGORY.MAX} эллементов`,
       options: {
-        min: 1,
-        max: 6
+        min: COUNT.CATEGORY.MIN,
+        max: COUNT.CATEGORY.MAX
       }
     },
     custom: {
@@ -73,10 +73,11 @@ const offerSchemaPut = {
   },
   description: {
     isLength: {
-      errorMessage: `Текст объявления. Минимум 50 символов, максимум 1000`,
+      errorMessage:
+        `Текст объявления. Минимум ${COUNT.DESCRIPTION.LENGTH.MIN} символов, максимум ${COUNT.DESCRIPTION.LENGTH.MAX}`,
       options: {
-        min: 50,
-        max: 1000
+        min: COUNT.DESCRIPTION.LENGTH.MIN,
+        max: COUNT.DESCRIPTION.LENGTH.MAX
       }
     },
     escape: true,
@@ -84,10 +85,11 @@ const offerSchemaPut = {
   },
   title: {
     isLength: {
-      errorMessage: `Заголовок объявления. Минимум 10 символов, максимум 100`,
+      errorMessage:
+        `Заголовок объявления. Минимум ${COUNT.TITLE.LENGTH.MIN} символов, максимум ${COUNT.TITLE.LENGTH.MAX}`,
       options: {
-        min: 10,
-        max: 100
+        min: COUNT.TITLE.LENGTH.MIN,
+        max: COUNT.TITLE.LENGTH.MAX
       }
     },
     escape: true,
@@ -96,9 +98,9 @@ const offerSchemaPut = {
   sum: {
     isInt: {
       options: {
-        min: 100
+        min: COUNT.COST.MIN
       },
-      errorMessage: `Сумма должна быть c минимальным числом 100`,
+      errorMessage: `Сумма должна быть c минимальным числом ${COUNT.COST.MIN}`,
     },
     toInt: true,
     optional: true

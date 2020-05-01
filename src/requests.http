@@ -20,7 +20,7 @@ Content-Type: application/json
 
 ###
 
-PUT http://localhost:3000/api/offers/7d8tO4
+PUT http://localhost:3000/api/offers/H39mbn
 Content-Type: application/json
 
 {
@@ -29,22 +29,22 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3000/api/offers/52B5rg
+DELETE http://localhost:3000/api/offers/H39mbn
 Content-Type: application/json
 
 ###
 
-GET http://localhost:3000/api/offers/V4ObMH/comments
+GET http://localhost:3000/api/offers/r6wFWC/comments
 Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3000/api/offers/7d8tO4/comments/HobK7r
+DELETE http://localhost:3000/api/offers/r6wFWC/comments/uSQkMF
 Content-Type: application/json
 
 ###
 
-POST http://localhost:3000/api/offers/GwWynF/comments
+POST http://localhost:3000/api/offers/r6wFWC/comments
 Content-Type: application/json
 
 {

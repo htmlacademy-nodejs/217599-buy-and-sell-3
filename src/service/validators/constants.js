@@ -25,15 +25,20 @@ const VALID_REQUEST_TEMPLATE = {
     }
   },
   SEARCH: {
-    query: ``
+    QUERY: {
+      GET: {
+        query: ``
+      }
+    }
   }
 };
 
-const ERROR_TEMPLATE = {
-  errors: []
+const REQUEST_PARAM = {
+  BODY: `body`,
+  QUERY: `query`
 };
 
 module.exports = {
   VALID_REQUEST_TEMPLATE,
-  ERROR_TEMPLATE
+  REQUEST_PARAM
 };

@@ -3,7 +3,7 @@
 const {Router} = require(`express`);
 const {nanoid} = require(`nanoid`);
 
-const {mockData} = require(`../utils`);
+const {mockData} = require(`../constants`);
 const {HTTP_CODE, NOT_FOUND_MESSAGE, ID_SIZE} = require(`../constants`);
 const {
   validateBySchema,
@@ -58,7 +58,9 @@ offersRouter.get(`/:offerId/comments`, (req, res, next) => {
 });
 offersRouter.post(`/`,
     validateBySchema(offerSchemaPost),
-    (req, res, next) => validate(req, res, next, VALID_REQUEST_TEMPLATE.OFFER.POST),
+    (req, res, next) => validate(req, res, next, {
+      tmp: VALID_REQUEST_TEMPLATE.OFFER.POST
+    }),
     (req, res) => {
       const newOffer = {
         ...req.body,
@@ -72,7 +74,9 @@ offersRouter.post(`/`,
     });
 offersRouter.post(`/:offerId/comments`,
     validateBySchema(commentSchemaPost),
-    (req, res, next) => validate(req, res, next, VALID_REQUEST_TEMPLATE.COMMENT.POST),
+    (req, res, next) => validate(req, res, next, {
+      tmp: VALID_REQUEST_TEMPLATE.COMMENT.POST
+    }),
     (req, res, next) => {
       const offerId = req.params.offerId;
 
@@ -91,14 +95,16 @@ offersRouter.post(`/:offerId/comments`,
         };
 
         offer.comments.push(newComment);
-        res.status(HTTP_CODE.CREATED).json(newComment.id);
+        res.status(HTTP_CODE.CREATED).json({id: newComment.id});
       } catch (err) {
         next(err);
       }
     });
 offersRouter.put(`/:offerId`,
     validateBySchema(offerSchemaPut),
-    (req, res, next) => validate(req, res, next, VALID_REQUEST_TEMPLATE.OFFER.PUT),
+    (req, res, next) => validate(req, res, next, {
+      tmp: VALID_REQUEST_TEMPLATE.OFFER.PUT
+    }),
     async (req, res, next) => {
       try {
         const offerId = req.params.offerId;
@@ -139,7 +145,7 @@ offersRouter.delete(`/:offerId`, (req, res, next) => {
     next(err);
   }
 });
-offersRouter.delete(`/:offerId/comments/:commentId`, async (req, res, next) => {
+offersRouter.delete(`/:offerId/comments/:commentId`, (req, res, next) => {
   try {
     const offerId = req.params.offerId;
     const commentId = req.params.commentId;

@@ -2,11 +2,6 @@
 
 const fs = require(`fs`).promises;
 
-// TODO [@Shirokuiu]: Временное решение
-let mockData = {
-  offers: []
-};
-
 const getRandomInt = (min, max) => {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -73,6 +68,5 @@ module.exports = {
   runParallel,
   checkDuplicateInArray,
   compareArrayToAnotherArray,
-  checkStrBySpace,
-  mockData,
+  checkStrBySpace
 };

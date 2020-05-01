@@ -1,14 +1,16 @@
 'use strict';
 
+const {COUNT} = require(`../../../constants`);
+
 const commentSchemaPost = {
   text: {
     exists: {
       errorMessage: `Вы не передали поле text`
     },
     isLength: {
-      errorMessage: `Текст комментария должен быть не меньше 20 символов`,
+      errorMessage: `Текст комментария должен быть не меньше ${COUNT.COMMENT.LENGTH.MIN} символов`,
       options: {
-        min: 20,
+        min: COUNT.COMMENT.LENGTH.MIN,
       }
     },
   }

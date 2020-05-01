@@ -2,43 +2,35 @@
 
 const {Router} = require(`express`);
 
-const {VALID_REQUEST_TEMPLATE, ERROR_TEMPLATE} = require(`../validators/constants`);
-const {HTTP_CODE} = require(`../constants`);
-const {compareArrayToAnotherArray, mockData} = require(`../utils`);
+const {HTTP_CODE, mockData} = require(`../constants`);
+const {validateBySchema, validate, searchSchemaQuery, VALID_REQUEST_TEMPLATE} = require(`../validators/index`);
+const {REQUEST_PARAM} = require(`../validators/constants`);
 
 const searchRouter = new Router();
 
-const validQueryTmp = Object.keys(VALID_REQUEST_TEMPLATE.SEARCH);
+searchRouter.get(`/`,
+    validateBySchema(searchSchemaQuery),
+    (req, res, next) => validate(req, res, next, {
+      req: REQUEST_PARAM.QUERY,
+      tmp: VALID_REQUEST_TEMPLATE.SEARCH.QUERY.GET
+    }),
+    (req, res, next) => {
+      try {
+        const reqQueryStr = req.query.query;
 
-searchRouter.get(`/`, (req, res, next) => {
-  try {
-    const reqQuery = req.query;
-    const reqQueryTmp = Object.keys(reqQuery);
-    const isQueryInvalid = compareArrayToAnotherArray(reqQueryTmp, validQueryTmp);
+        if (!reqQueryStr.trim().length) {
+          res.status(HTTP_CODE.OK).json([]);
 
-    if (isQueryInvalid) {
-      ERROR_TEMPLATE.errors.push({
-        search: `Передан не валидный параметр поиска`
-      });
-      res.status(HTTP_CODE.INVALID_REQUEST).send(ERROR_TEMPLATE);
+          return;
+        }
 
-      return;
-    }
+        const filteredOffers = mockData.offers.slice()
+          .filter(({title}) => title.toLowerCase().includes(reqQueryStr.toLowerCase()));
 
-    // [@Shirokuiu]: Если параметр пустой
-    if (!reqQueryTmp.length || !reqQuery.query.trim().length) {
-      res.status(HTTP_CODE.OK).json([]);
-
-      return;
-    }
-
-    const foundOffers = mockData.offers
-      .filter(({title}) => title.toLowerCase().includes(reqQuery.query.toLowerCase()));
-
-    res.json(foundOffers);
-  } catch (err) {
-    next(err);
-  }
-});
+        res.status(HTTP_CODE.OK).json(filteredOffers);
+      } catch (err) {
+        next(err);
+      }
+    });
 
 module.exports = searchRouter;

@@ -2,15 +2,19 @@
 
 const {validationResult} = require(`express-validator`);
 const {HTTP_CODE} = require(`../constants`);
+const {REQUEST_PARAM} = require(`./constants`);
 const {compareArrayToAnotherArray} = require(`../utils`);
 
-const validate = (req, res, next, validTmp = undefined) => {
+const validate = (req, res, next, validTmp = {
+  req: REQUEST_PARAM.BODY,
+  tmp: undefined
+}) => {
   const errors = validationResult(req);
   const extractedErrors = [];
 
-  if (validTmp) {
-    const reqTmpArr = Object.keys(req.body);
-    const validTmpArr = Object.keys(validTmp);
+  if (validTmp.tmp) {
+    const reqTmpArr = Object.keys(req[validTmp.req || REQUEST_PARAM.BODY]);
+    const validTmpArr = Object.keys(validTmp.tmp);
 
     // [@Shirokuiu]: Пустой ли body от клиента
     if (!reqTmpArr.length) {
@@ -24,12 +28,11 @@ const validate = (req, res, next, validTmp = undefined) => {
     }
 
     const hasInvalidTmp = compareArrayToAnotherArray(reqTmpArr, validTmpArr);
-    console.log(hasInvalidTmp);
 
     // [@Shirokuiu]: Соответствует ли body клиента валидному шаблону
     if (hasInvalidTmp) {
       extractedErrors.push({
-        body: `Переданные параметры не соответствуют шаблону`
+        body: `Переданные параметры не соответствуют валидным значениям`
       });
 
       return res.status(HTTP_CODE.INVALID_REQUEST).json({
