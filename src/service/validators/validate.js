@@ -5,16 +5,16 @@ const {HTTP_CODE} = require(`../constants`);
 const {REQUEST_PARAM} = require(`./constants`);
 const {compareArrayToAnotherArray} = require(`../utils`);
 
-const validate = (req, res, next, validTmp = {
+const validate = (req, res, next, options = {
   req: REQUEST_PARAM.BODY,
   tmp: undefined
 }) => {
   const errors = validationResult(req);
   const extractedErrors = [];
 
-  if (validTmp.tmp) {
-    const reqTmpArr = Object.keys(req[validTmp.req || REQUEST_PARAM.BODY]);
-    const validTmpArr = Object.keys(validTmp.tmp);
+  if (options.tmp) {
+    const reqTmpArr = Object.keys(req[options.req || REQUEST_PARAM.BODY]);
+    const validTmpArr = Object.keys(options.tmp);
 
     // [@Shirokuiu]: Пустой ли body от клиента
     if (!reqTmpArr.length) {
