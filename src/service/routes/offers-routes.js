@@ -27,7 +27,6 @@ offersRouter.get(`/:offerId`, async (req, res) => {
 
     if (!offer) {
       res.status(HTTP_CODE.NOT_FOUND).send(NOT_FOUND_MESSAGE);
-
       return;
     }
 
@@ -54,7 +53,7 @@ offersRouter.get(`/:offerId/comments`, async (req, res) => {
     res.json(comments);
   } catch (err) {
     console.log(err);
-    res.status(HTTP_CODE.NOT_FOUND);
+    res.status(HTTP_CODE.NOT_FOUND).send(NOT_FOUND_MESSAGE);
   }
 });
 offersRouter.post(`/`,
@@ -159,6 +158,8 @@ offersRouter.delete(`/:offerId/comments/:commentId`, async (req, res) => {
 
     if (!deletedComment.length) {
       res.status(HTTP_CODE.NOT_FOUND).send(NOT_FOUND_MESSAGE);
+
+      return;
     }
 
     offer.comments = offer.comments.filter(({id}) => commentId !== id);

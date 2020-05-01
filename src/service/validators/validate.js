@@ -24,6 +24,7 @@ const validate = (req, res, next, validTmp = undefined) => {
     }
 
     const hasInvalidTmp = compareArrayToAnotherArray(reqTmpArr, validTmpArr);
+    console.log(hasInvalidTmp);
 
     // [@Shirokuiu]: Соответствует ли body клиента валидному шаблону
     if (hasInvalidTmp) {

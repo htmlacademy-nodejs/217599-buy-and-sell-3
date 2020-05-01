@@ -20,7 +20,7 @@ Content-Type: application/json
 
 ###
 
-PUT http://localhost:3000/api/offers/zIisjO
+PUT http://localhost:3000/api/offers/7d8tO4
 Content-Type: application/json
 
 {
