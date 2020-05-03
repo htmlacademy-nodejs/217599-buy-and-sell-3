@@ -41,8 +41,8 @@ module.exports = {
 
     // TODO [@Shirokuiu]: Временное решение
     await runParallel(
-      parseJSONFile(MOCKS_FILE_NAME),
-      parseTXTFile(FILE_PATH.CATEGORIES)
+        parseJSONFile(MOCKS_FILE_NAME),
+        parseTXTFile(FILE_PATH.CATEGORIES)
     ).then(([articles, categories]) => {
       mockData.articles = articles;
       mockData.categories = categories;
