@@ -8,7 +8,8 @@ const INTERNAL_SERVER_ERROR_MESSAGE = `INTERNAL_SERVER_ERROR`;
 const INVALID_REQUEST_MESSAGE = `INVALID_REQUEST`;
 // TODO [@Shirokuiu]: Временное решение
 const mockData = {
-  offers: []
+  offers: [],
+  categories: []
 };
 const ExitCode = {
   success: 0,

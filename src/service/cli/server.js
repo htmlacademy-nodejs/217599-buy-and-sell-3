@@ -3,8 +3,16 @@
 const express = require(`express`);
 const chalk = require(`chalk`);
 
-const {HTTP_CODE, NOT_FOUND_MESSAGE, INTERNAL_SERVER_ERROR_MESSAGE, MOCKS_FILE_NAME, mockData} = require(`../constants`);
-const {parseJSONFile} = require(`../utils`);
+const {
+  HTTP_CODE,
+  NOT_FOUND_MESSAGE,
+  INTERNAL_SERVER_ERROR_MESSAGE,
+  MOCKS_FILE_NAME,
+  mockData,
+  FILE_PATH
+} = require(`../constants`);
+const {VALID_REQUEST_TEMPLATE} = require(`../validators/constants`);
+const {parseJSONFile, parseTXTFile, runParallel} = require(`../utils`);
 const {offersRoutes, searchRoutes, categoriesRoutes} = require(`../routes/index`);
 
 const app = express();
@@ -26,26 +34,21 @@ app.use((err, req, res, _next) => {
   console.log(err);
 });
 
-// TODO [@Shirokuiu]: Временное решение
-const createSessionMockData = async (fileName) => {
-  try {
-    mockData.offers = await parseJSONFile(fileName);
-  } catch (err) {
-    throw err;
-  }
-};
-
 module.exports = {
   name: `--server`,
   async run(customPort) {
     const port = parseInt(customPort, 10) || DEFAULT_PORT;
 
     // TODO [@Shirokuiu]: Временное решение
-    try {
-      await createSessionMockData(MOCKS_FILE_NAME);
-    } catch (err) {
-      mockData.offers = [];
-    }
+    await runParallel(
+        parseJSONFile(MOCKS_FILE_NAME),
+        parseTXTFile(FILE_PATH.CATEGORIES)
+    ).then(([articles, categories]) => {
+      mockData.articles = articles;
+      mockData.categories = categories;
+      VALID_REQUEST_TEMPLATE.OFFER.POST.category = categories;
+      VALID_REQUEST_TEMPLATE.OFFER.PUT.category = categories;
+    });
 
     app.listen(port, () => {
       console.log(chalk.green(`Ожидаю соединений на ${port}: http://localhost:${port}`));
