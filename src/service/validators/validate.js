@@ -3,37 +3,38 @@
 const {validationResult} = require(`express-validator`);
 const {HTTP_CODE} = require(`../constants`);
 const {REQUEST_PARAM} = require(`./constants`);
-const {compareArrayToAnotherArray} = require(`../utils`);
+const {compareArrayToAnotherArray, uniqueObjArr} = require(`../utils`);
 
 const validate = (req, res, next, options = {
   req: REQUEST_PARAM.BODY,
   tmp: undefined
 }) => {
   const errors = validationResult(req);
-  const extractedErrors = [];
+  let extractedErrors = [{
+    invalid: [{
+      key: ``,
+      value: ``
+    }],
+    msg: ``,
+    valid: ``
+  }];
 
   if (options.tmp) {
     const reqTmpArr = Object.keys(req[options.req || REQUEST_PARAM.BODY]);
     const validTmpArr = Object.keys(options.tmp);
 
-    // [@Shirokuiu]: Пустой ли body от клиента
-    if (!reqTmpArr.length) {
-      extractedErrors.push({
-        body: `Переданные параметры пусты`
-      });
+    const hasInvalidTmp = Boolean(compareArrayToAnotherArray(reqTmpArr, validTmpArr).length);
 
-      return res.status(HTTP_CODE.INVALID_REQUEST).json({
-        errors: extractedErrors,
-      });
-    }
-
-    const hasInvalidTmp = compareArrayToAnotherArray(reqTmpArr, validTmpArr);
-
-    // [@Shirokuiu]: Соответствует ли body клиента валидному шаблону
+    // NOTE [@Shirokuiu]: Соответствует ли body клиента валидному шаблону
     if (hasInvalidTmp) {
-      extractedErrors.push({
-        body: `Переданные параметры не соответствуют валидным значениям`
-      });
+      extractedErrors = {
+        invalid: compareArrayToAnotherArray(reqTmpArr, validTmpArr).map((item) => ({
+          key: item,
+          value: req[options.req || REQUEST_PARAM.BODY][item]
+        })),
+        msg: `Переданные параметры не соответствуют валидным значениям`,
+        valid: options.tmp
+      };
 
       return res.status(HTTP_CODE.INVALID_REQUEST).json({
         errors: extractedErrors,
@@ -44,7 +45,15 @@ const validate = (req, res, next, options = {
   if (errors.isEmpty()) {
     return next();
   }
-  errors.array().map((err) => extractedErrors.push({[err.param]: err.msg}));
+
+  // NOTE [@Shirokuiu]: Чтобы ключи ошибок не повторялись
+  extractedErrors = uniqueObjArr(errors.array(), `param`)
+    .map(({param, msg}) => ({
+      invalid: [{
+        key: param,
+        value: req[options.req || REQUEST_PARAM.BODY][param]
+      }], msg, valid: options.tmp[param]
+    }));
 
   return res.status(HTTP_CODE.INVALID_REQUEST).json({
     errors: extractedErrors,
