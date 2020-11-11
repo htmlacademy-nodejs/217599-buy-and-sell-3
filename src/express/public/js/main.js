@@ -1,17 +1,16 @@
 'use strict';
 
-(function() {
+(function () {
   var deletEls = document.querySelectorAll('.js-delete');
   for (var i = 0; i < deletEls.length; i++) {
-    deletEls[i].addEventListener('click', function() {
+    deletEls[i].addEventListener('click', function () {
       var card = this.closest('.js-card');
       card.parentNode.removeChild(card);
-
-    })
+    });
   }
 })();
 
-'use strict';
+('use strict');
 
 (function () {
   var form = document.querySelector('.form');
@@ -69,23 +68,24 @@
         searchable: false,
         multiple: true,
         width: 222,
-        placeholder: placeholder
+        placeholder: placeholder,
       });
       var selection = Selectr.prototype.select,
         deselection = Selectr.prototype.deselect;
       var ours = document.createElement('div');
       ours.className = SS.selected.className;
       SS.selected.className += ' selectr-selected--hidden';
-      SS.selected.parentNode.insertBefore(ours,SS.selected);
-      var updateOurs = function(){
-        ours.innerText = SS.selected.innerText.trim().replace(/\n/g, ', ') || placeholder;
+      SS.selected.parentNode.insertBefore(ours, SS.selected);
+      var updateOurs = function () {
+        ours.innerText =
+          SS.selected.innerText.trim().replace(/\n/g, ', ') || placeholder;
       };
-      Selectr.prototype.select = function(){
+      Selectr.prototype.select = function () {
         selection.apply(this, arguments);
         updateOurs();
       };
 
-      Selectr.prototype.deselect = function(){
+      Selectr.prototype.deselect = function () {
         deselection.apply(this, arguments);
         updateOurs();
       };
@@ -94,26 +94,34 @@
 
     var priceField = form.querySelector('.js-price');
     if (priceField) {
-      priceField.addEventListener('keydown', function(e) {
-        if (window.event.keyCode >= 65 && window.event.keyCode <= 90 || window.event.keyCode === 189 || window.event.keyCode === 188) {
+      priceField.addEventListener('keydown', function (e) {
+        if (
+          (window.event.keyCode >= 65 && window.event.keyCode <= 90) ||
+          window.event.keyCode === 189 ||
+          window.event.keyCode === 188
+        ) {
           e.preventDefault();
         }
-        if (window.event.keyCode === 190 && (!priceField.value || priceField.value.includes('.'))) {
+        if (
+          window.event.keyCode === 190 &&
+          (!priceField.value || priceField.value.includes('.'))
+        ) {
           e.preventDefault();
         }
-      })
+      });
     }
   }
-
 })();
 
-'use strict';
+('use strict');
 
 (function () {
   var signUpAvatarContainer = document.querySelector('.js-preview-container');
 
   if (signUpAvatarContainer) {
-    var signUpFieldAvatarInput = signUpAvatarContainer.querySelector('.js-file-field');
+    var signUpFieldAvatarInput = signUpAvatarContainer.querySelector(
+      '.js-file-field',
+    );
     var signUpAvatar = signUpAvatarContainer.querySelector('.js-preview');
 
     var readFilePhoto = function (file) {
@@ -135,13 +143,13 @@
   }
 })();
 
-'use strict';
+('use strict');
 
 (function () {
   svg4everybody();
 })();
 
-'use strict';
+('use strict');
 
 (function () {
   var search = document.querySelector('.search');
