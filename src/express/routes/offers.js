@@ -65,8 +65,6 @@ offersRouter.post('/add', upload.single('avatar'), async (req, res) => {
     description: body.comment,
   };
 
-  console.log(offerBody);
-
   try {
     await offersAPI.createOffer(offerBody);
 
