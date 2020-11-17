@@ -7,7 +7,7 @@ class Offers {
   async loadOffers() {
     const {data: offers} = await api.get('offers');
 
-    return [...offers].map((offer) => ({
+    return offers.map((offer) => ({
       ...offer,
       classMod: offer.picture.slice(4, 6), // Временное решение, так как нужно для css модификатора (спросил в группе а нужен ли он)
       offerType: OfferType[offer.type],
