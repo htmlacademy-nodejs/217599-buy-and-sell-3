@@ -80,24 +80,15 @@ app.use(express.json());
 
 categories(app, new CategoriesService(mockData));
 
-describe('Возвращает список категорий', () => {
+describe('Тестирует get запросы к categories api', () => {
   let response;
 
   beforeAll(async () => {
     response = await request(app).get('/categories');
   });
 
-  test('Статус ответа 200', () => {
+  test('Получает все категории', () => {
     expect(response.statusCode).toBe(HTTPCodes.Ok);
-  });
-
-  test('Возращает список из трех категорий', () => {
     expect(response.body.length).toBe(3);
-  });
-
-  test('Возвращает категрии следующего вида - Посуда, Журнал, Игры', () => {
-    expect(response.body).toEqual(
-      expect.arrayContaining(['Посуда', 'Журнал', 'Игры']),
-    );
   });
 });
