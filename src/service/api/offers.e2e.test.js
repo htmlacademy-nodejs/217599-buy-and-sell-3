@@ -3,7 +3,7 @@
 const express = require('express');
 const request = require('supertest');
 const offers = require('./offers');
-const {describe, beforeAll, test, expect} = require('@jest/globals');
+const {describe, test, expect} = require('@jest/globals');
 const {OfferService} = require('../data-service');
 const {HTTPCodes} = require('../../constants');
 
@@ -68,46 +68,46 @@ const createAPI = () => {
   return app;
 };
 
-describe('Возвращает список всех объявлений', () => {
+describe('Тестирует get запросы к offers api', () => {
   const app = createAPI();
   let response;
 
-  beforeAll(async () => {
+  test('Возвращает список объявлений', async () => {
     response = await request(app).get('/offers');
-  });
 
-  test(`Возвращает статус ${HTTPCodes.Ok}`, () => {
     expect(response.statusCode).toBe(HTTPCodes.Ok);
-  });
-
-  test('Возвращает 3 объявления', () => {
     expect(response.body.length).toBe(3);
   });
 
-  test('Возвращает id первого объявления - a8b1zR', () => {
-    expect(response.body[0].id).toBe('a8b1zR');
-  });
-});
+  test('Возвращает определенное объявление', async () => {
+    const responseTitle = 'Продам новую приставку Sony Playstation 5.';
 
-describe('Возращает определенно объявление по id', () => {
-  const app = createAPI();
-  const responseTitle = 'Продам новую приставку Sony Playstation 5.';
-  let response;
-
-  beforeAll(async () => {
     response = await request(app).get('/offers/a8b1zR');
+
+    expect(response.statusCode).toBe(HTTPCodes.Ok);
+    expect(response.body.title).toBe(responseTitle);
   });
 
-  test(`Возвращает статус кода ответа ${HTTPCodes.Ok}`, () => {
+  test('Возвращает комментарии к определенному объявлению', async () => {
+    response = await request(app).get('/offers/PIdgc0/comments');
+
     expect(response.statusCode).toBe(HTTPCodes.Ok);
   });
 
-  test(`Возвращает объявление с заголовком - ${responseTitle}`, () => {
-    expect(response.body.title).toBe(responseTitle);
+  test(`Возвращает ${HTTPCodes.NotFound} если запрос был на несуществующий ресурс offers`, async () => {
+    response = await request(app).get('/offerss');
+
+    expect(response.statusCode).toBe(HTTPCodes.NotFound);
+  });
+
+  test(`Возвращает ${HTTPCodes.NotFound}, если делают запрос к несуществующему определенному объявлению`, async () => {
+    response = await request(app).get('/offers/a8b1zRrr');
+
+    expect(response.statusCode).toBe(HTTPCodes.NotFound);
   });
 });
 
-describe('Создает новое объвление если переданные данные валидны', () => {
+describe('Тестирует post запросы к offers api', () => {
   const newOffer = {
     description: 'Текст объявления',
     picture: 'picture.jpg',
@@ -116,35 +116,28 @@ describe('Создает новое объвление если переданн
     sum: 100,
     categories: ['Книги'],
   };
-  const app = createAPI();
-  let response;
-
-  beforeAll(async () => {
-    response = await request(app).post('/offers').send(newOffer);
-  });
-
-  test(`Возвращает статус кода ответа ${HTTPCodes.Created}`, () => {
-    expect(response.statusCode).toBe(HTTPCodes.Created);
-  });
-
-  test('Возвращает обновленные объявления', () =>
-    request(app)
-      .get('/offers')
-      .expect((res) => expect(res.body.length).toBe(4)));
-});
-
-describe(`Не содает объявление, если тело нового объявления невалидное`, () => {
-  const newOffer = {
-    description: 'Текст объявления',
-    picture: 'picture.jpg',
-    title: 'Заголовок объявления',
-    type: 'offer',
-    sum: 100,
-    category: ['Книги'],
+  const commentText = 'Новый комментарий';
+  const newOfferComment = {
+    text: commentText,
   };
+  const invalidOfferComment = {
+    textt: commentText,
+  };
+
   const app = createAPI();
 
-  test(`Возвращает ${HTTPCodes.InvalidRequest}, если тело запроса невалидное`, async () => {
+  test('Создает объявление', async () => {
+    await request(app).post('/offers').send(newOffer).expect(HTTPCodes.Created);
+  });
+
+  test('Создает комментарий к объявлению', async () => {
+    await request(app)
+      .post('/offers/PIdgc0/comments')
+      .send(newOfferComment)
+      .expect(HTTPCodes.Created);
+  });
+
+  test('Не создает объявление, если тело нового объявления невалидное', async () => {
     for (const key of Object.keys(newOffer)) {
       const invalidOffer = {...newOffer};
 
@@ -156,31 +149,16 @@ describe(`Не содает объявление, если тело нового
         .expect(HTTPCodes.InvalidRequest);
     }
   });
+
+  test('Не создает комментарий, если тело нового комментария невалидно', async () => {
+    await request(app)
+      .post('/offers/PIdgc0/comments')
+      .send(invalidOfferComment)
+      .expect(HTTPCodes.InvalidRequest);
+  });
 });
 
-describe('Редактирует объявление', () => {
-  const editedOfferTitle = 'Заголовок объявления отредактирован';
-  const editedOffer = {
-    title: editedOfferTitle,
-  };
-  const app = createAPI();
-  let response;
-
-  beforeAll(async () => {
-    response = await request(app).put('/offers/a8b1zR').send(editedOffer);
-  });
-
-  test(`Возвращает статус ответа ${HTTPCodes.NoContent}`, () => {
-    expect(response.statusCode).toBe(HTTPCodes.NoContent);
-  });
-
-  test(`Заголовок отредактирован на - ${editedOfferTitle}`, () =>
-    request(app)
-      .get('/offers/a8b1zR')
-      .expect((res) => expect(res.body.title).toBe(editedOfferTitle)));
-});
-
-describe(`Возвращает ${HTTPCodes.NotFound} если пытаются изменить несуществующее объявление`, () => {
+describe('Тестирует put запросы к offers api', () => {
   const editedOfferTitle = 'Заголовок объявления отредактирован';
   const editedOffer = {
     title: editedOfferTitle,
@@ -188,68 +166,46 @@ describe(`Возвращает ${HTTPCodes.NotFound} если пытаются �
   const invalidEditedOffer = {
     titlee: editedOfferTitle,
   };
+
   const app = createAPI();
-  let response;
 
-  beforeAll(async () => {
-    response = await request(app).put('/offers/a8b1zRr').send(editedOffer);
+  test('Редактирует объявление', async () => {
+    await request(app)
+      .put('/offers/a8b1zR')
+      .send(editedOffer)
+      .expect(HTTPCodes.NoContent);
+
+    await request(app)
+      .get('/offers/a8b1zR')
+      .expect((res) => expect(res.body.title).toBe(editedOfferTitle));
   });
 
-  test(`Возвращает ${HTTPCodes.NotFound}`, () => {
-    expect(response.statusCode).toBe(HTTPCodes.NotFound);
+  test(`Возвращает ${HTTPCodes.NotFound} если пытаются изменить несуществующее объявление`, async () => {
+    await request(app)
+      .put('/offers/a8b1zRr')
+      .send(editedOffer)
+      .expect(HTTPCodes.NotFound);
   });
 
-  test(`Возвращает ${HTTPCodes.InvalidRequest}, если передано невалидное тело запроса на редактирование`, () =>
-    request(app)
+  test(`Возвращает ${HTTPCodes.InvalidRequest}, если передано невалидное тело запроса на редактирование`, async () => {
+    await request(app)
       .put('/offers/a8b1zR')
       .send(invalidEditedOffer)
-      .expect(HTTPCodes.InvalidRequest));
+      .expect(HTTPCodes.InvalidRequest);
+  });
 });
 
-describe('Удаляет объявления', () => {
+describe('Тестирует delete запросы к offers api', () => {
   const app = createAPI();
-  let response;
 
-  beforeAll(async () => {
-    response = await request(app).delete('/offers/a8b1zR');
-  });
-
-  test(`Возвращает ${HTTPCodes.NoContent} после успешного удаления объявления`, () => {
-    expect(response.statusCode).toBe(HTTPCodes.NoContent);
-  });
-
-  test('После удаление возвращает корректное количество объявлений', () =>
-    request(app)
+  test('Удаляет объявление', async () => {
+    await request(app).delete('/offers/a8b1zR').expect(HTTPCodes.NoContent);
+    await request(app)
       .get('/offers')
-      .expect((res) => expect(res.body.length).toBe(3)));
-
-  test(`Возвращает ${HTTPCodes.NotFound} код, если нет удаляемого объявления`, () =>
-    request(app).delete('/offers/test').expect(HTTPCodes.NotFound));
-});
-
-describe('Корректно отдает и модифицирует комментарии', () => {
-  const app = createAPI();
-  const commentText = 'Новый комментарий';
-  const newOfferComment = {
-    text: commentText,
-  };
-  const invalidOfferComment = {
-    textt: commentText,
-  };
-
-  test(`Код ответа на успешный запрос комментариев к объявлению равен - ${HTTPCodes.Ok}`, () => {
-    return request(app).get('/offers/PIdgc0/comments').expect(HTTPCodes.Ok);
+      .expect((res) => expect(res.body.length).toBe(3));
   });
 
-  test(`Код ответа при успешном добавлении комментария равен - ${HTTPCodes.Created}`, () =>
-    request(app)
-      .post('/offers/PIdgc0/comments')
-      .send(newOfferComment)
-      .expect(HTTPCodes.Created));
-
-  test(`Код ответа, если передано невалидное тело для создания комментария равно - ${HTTPCodes.InvalidRequest}`, () =>
-    request(app)
-      .post('/offers/PIdgc0/comments')
-      .send(invalidOfferComment)
-      .expect(HTTPCodes.InvalidRequest));
+  test(`Возвращает ${HTTPCodes.NotFound} код, если нет удаляемого объявления`, async () => {
+    await request(app).delete('/offers/test').expect(HTTPCodes.NotFound);
+  });
 });
