@@ -67,7 +67,7 @@ app.use(express.json());
 
 search(app, new SearchService(mockData));
 
-describe('Возращает результат на основе query параметра title', () => {
+describe('Тестирует get запросы к search api', () => {
   let response;
 
   beforeAll(async () => {
@@ -76,17 +76,12 @@ describe('Возращает результат на основе query пара
     });
   });
 
-  test('Статус ответа 200', () =>
-    expect(response.statusCode).toBe(HTTPCodes.Ok));
-
-  test('Возвращает 1 объявление', () => {
+  test('Возвращает результат поиска', () => {
+    expect(response.statusCode).toBe(HTTPCodes.Ok);
     expect(response.body.length).toBe(1);
   });
 
-  test('Возвращает объявление с корректным id', () => {
-    expect(response.body[0].id).toBe('8t_dvI');
+  test('Если отсутствует query параметр в поиске, API влращает 400 код', async () => {
+    await request(app).get('/search').expect(HTTPCodes.InvalidRequest);
   });
 });
-
-test('Если отсутствует query параметр в поиске, API влращает 400 код', () =>
-  request(app).get('/search').expect(HTTPCodes.InvalidRequest));
