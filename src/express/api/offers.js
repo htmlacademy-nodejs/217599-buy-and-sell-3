@@ -4,7 +4,7 @@ const api = require('./api-config');
 const {OfferType} = require('../../constants');
 
 class Offers {
-  async loadOffers() {
+  static async loadOffers() {
     const {data: offers} = await api.get('offers');
 
     return offers.map((offer) => ({
@@ -14,13 +14,13 @@ class Offers {
     }));
   }
 
-  async loadOffer(id) {
+  static async loadOffer(id) {
     const {data: offer} = await api.get(`offers/${id}`);
 
     return offer;
   }
 
-  async searchOffers(searchStr) {
+  static async searchOffers(searchStr) {
     const {data: offers} = await api.get('search', {
       params: {
         title: searchStr,
@@ -30,7 +30,7 @@ class Offers {
     return offers;
   }
 
-  async createOffer(body) {
+  static async createOffer(body) {
     const {data: id} = await api.post('offers', body);
 
     return id;

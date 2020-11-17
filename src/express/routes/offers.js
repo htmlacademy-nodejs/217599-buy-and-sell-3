@@ -4,13 +4,11 @@ const {Router} = require('express');
 const multer = require(`multer`);
 const path = require(`path`);
 const {nanoid} = require(`nanoid`);
-const {Offers, Categories} = require('../api');
+const {Offers: OffersAPI, Categories: CategoriesAPI} = require('../api');
 const {editOfferExist} = require('../middlewares');
 const {HTTPCodes} = require('../../constants');
 
 const offersRouter = new Router();
-const categoriesAPI = new Categories();
-const offersAPI = new Offers();
 
 const UPLOAD_DIR = `../upload/img/`;
 const uploadDirAbsolute = path.resolve(__dirname, UPLOAD_DIR);
@@ -28,7 +26,7 @@ const upload = multer({storage});
 
 offersRouter.get('/add', async (req, res) => {
   try {
-    const categories = await categoriesAPI.loadAll();
+    const categories = await CategoriesAPI.loadAll();
 
     return res.status(HTTPCodes.Ok).render('new-ticket', {categories});
   } catch (err) {
@@ -42,7 +40,7 @@ offersRouter.get('/:id', (req, res) => {
 
 offersRouter.get(
   '/edit/:id',
-  editOfferExist(new Offers(), new Categories()),
+  editOfferExist(OffersAPI, CategoriesAPI),
   async (req, res) => {
     const {dataOffer, categories} = res.locals;
 
@@ -66,7 +64,7 @@ offersRouter.post('/add', upload.single('avatar'), async (req, res) => {
   };
 
   try {
-    await offersAPI.createOffer(offerBody);
+    await OffersAPI.createOffer(offerBody);
 
     return res.status(HTTPCodes.Created).redirect('/my');
   } catch (err) {

@@ -3,7 +3,7 @@
 const api = require('./api-config');
 
 class Categories {
-  async loadAll() {
+  static async loadAll() {
     const {data: categories} = await api.get('categories');
 
     return categories;
