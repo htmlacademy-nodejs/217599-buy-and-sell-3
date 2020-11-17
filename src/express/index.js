@@ -31,7 +31,7 @@ app.use('/search', searchRoutes);
 app.use((req, res) => {
   res.status(HTTPCodes.NotFound).render('error/404');
 });
-app.use((err, req, res) => {
+app.use((err, req, res, _next) => {
   res.status(HTTPCodes.InternalServerError).render('error/500');
   console.error(chalk.red(err));
 });
