@@ -14,6 +14,10 @@ app.set('json spaces', 2);
 app.use(express.json());
 app.use('/api', apiRoutes);
 
+app.use('/favicon.ico', (req, res) => {
+  res.status(HTTPCodes.NoContent).send(HTTPMessages[HTTPCodes.NoContent]);
+});
+
 app.use((req, res) => {
   logger.error(`Route not found: ${req.url}`);
 
