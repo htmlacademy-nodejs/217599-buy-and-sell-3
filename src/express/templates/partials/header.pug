@@ -1,17 +1,31 @@
-header.header
+header.header.header--logged
   .header__wrapper
     a.header__logo.logo(href='main.html')
-      img(src='/img/logo.svg' width='179' height='34' alt='Логотип Куплю Продам')
+      img(
+        src='/img/logo.svg',
+        width='179',
+        height='34',
+        alt='Логотип Куплю Продам'
+      )
     nav.header__user-menu
       ul.header__list
         li.header__item
-          a(href='tickets-tickets.html') Публикации
+          a(href='my-tickets.html') Публикации
         li.header__item
           a(href='comments.html') Комментарии
-    form.search(method='get' action='#' autocomplete='off')
-      input(type='search' name='search' placeholder='Поиск' aria-label='Поиск')
+    form.search(method='get', action='/search', autocomplete='off')
+      input(
+        type='search',
+        name='title',
+        placeholder='Поиск',
+        aria-label='Поиск'
+      )
       .search__icon
       .search__close-btn
     a.header__avatar.avatar(href='#')
-      img(src='/img/avatar.jpg' srcset='/img/avatar@2x.jpg 2x' alt='Аватар пользователя')
-    a.header__input(href='sign-up.html') Вход и регистрация
+      img(
+        src='/img/avatar.jpg',
+        srcset='/img/avatar@2x.jpg 2x',
+        alt='Аватар пользователя'
+      )
+    a.header__input(href='ticket-form.html') Вход и регистрация
