@@ -1,6 +1,6 @@
 'use strict';
 
-const {HTTPCodes} = require('../../constants');
+const {errorSwitcher} = require('../lib');
 
 const editOfferExist = (offersAPI, categoriesAPI) => async (req, res, next) => {
   const {id} = req.params;
@@ -16,7 +16,7 @@ const editOfferExist = (offersAPI, categoriesAPI) => async (req, res, next) => {
       categories,
     };
   } catch (err) {
-    return res.status(HTTPCodes.NotFound).render('error/404');
+    return errorSwitcher(err, res);
   }
 
   return next();

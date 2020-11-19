@@ -1,6 +1,6 @@
 'use strict';
 
-const {HTTPCodes} = require('../../constants');
+const {errorSwitcher} = require('../lib');
 
 const searchExist = (service) => async (req, res, next) => {
   const {title} = req.query;
@@ -8,7 +8,7 @@ const searchExist = (service) => async (req, res, next) => {
   try {
     res.locals.definedOffers = await service.searchOffers(title);
   } catch (err) {
-    return res.status(HTTPCodes.NotFound).render('error/404');
+    return errorSwitcher(err, res);
   }
 
   return next();
